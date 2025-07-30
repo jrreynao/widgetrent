@@ -108,19 +108,23 @@ export default async function handler(req, res) {
   vars.mensaje_entrega_cliente = mensaje_entrega_cliente;
 
   try {
-    await transporter.sendMail({
+    const userResult = await transporter.sendMail({
       from: 'IsraCar Rent <admin@isracarent.com>',
       to: vars.customer_email,
       subject: '¡Tu reserva en IsraCar Rent! Finaliza y paga tu alquiler',
       html: fillTemplate(htmlCliente, vars)
     });
-    await transporter.sendMail({
+    const adminResult = await transporter.sendMail({
       from: 'IsraCar Rent <admin@isracarent.com>',
       to: 'admin@isracarent.com',
       subject: `Nueva solicitud de reserva de ${vars.customer_full_name}`,
       html: fillTemplate(htmlAdmin, vars)
     });
-    res.json({ok:true});
+    if (userResult.accepted.length && adminResult.accepted.length) {
+      res.json({ok:true});
+    } else {
+      res.status(500).json({error: 'No se pudo enviar uno o ambos correos'});
+    }
   } catch (e) {
     res.status(500).json({error: e.message});
   }
