@@ -30,8 +30,14 @@ export default async function handler(req, res) {
   // TODO: Asegúrate de definir direccionEntrega, mostrarDireccion, tarjeta_credito, extras_list_block, fillTemplate, htmlCliente, htmlAdmin antes de usar
 
   // Leer las plantillas de correo HTML
-  const htmlCliente = fs.readFileSync(path.resolve(__dirname, '../public/email_templates/correo_cliente.html'), 'utf8');
-  const htmlAdmin = fs.readFileSync(path.resolve(__dirname, '../public/email_templates/correo_admin.html'), 'utf8');
+  // Leer las plantillas desde la URL pública
+  async function fetchTemplate(url) {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`No se pudo obtener la plantilla: ${url}`);
+    return await res.text();
+  }
+  const htmlCliente = await fetchTemplate('https://widget.isracarent.com/email_templates/correo_cliente.html');
+  const htmlAdmin = await fetchTemplate('https://widget.isracarent.com/email_templates/correo_admin.html');
   const booking_id = Math.floor(Math.random()*1000000);
   const customer_full_name = form.datos?.nombre || '';
   const customer_email = form.datos?.email || '';
@@ -164,6 +170,7 @@ export default async function handler(req, res) {
       res.status(500).json({error: 'No se pudo enviar uno o ambos correos'});
     }
   } catch (e) {
-    res.status(500).json({error: e.message});
+    console.error('Error en send-reserva:', e);
+    res.status(500).json({error: e.message, stack: e.stack});
   }
 }
