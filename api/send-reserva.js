@@ -112,7 +112,29 @@ export default async function handler(req, res) {
     text_direccionentrega_block: mostrarDireccion && direccionEntrega ? `<b>Dirección de entrega:</b> ${direccionEntrega}` : '',
     booking_id: Math.floor(Math.random()*1000000),
     tarjeta_credito,
-    customer_whatsapp_link: form.datos?.telefono ? `549${String(form.datos.telefono).replace(/\D/g, '')}` : '',
+    // Extraer código de país y número local del teléfono internacional
+    customer_whatsapp_link: (() => {
+      if (!form.datos?.telefono) return '';
+      // El input react-phone-input-2 entrega el número en formato internacional: +<código><número>
+      let tel = String(form.datos.telefono).replace(/[^\d]/g, '');
+      // Si el número empieza con '00', quitarlo
+      if (tel.startsWith('00')) tel = tel.slice(2);
+      // Si el número empieza con '549', es Argentina (WhatsApp requiere 549...)
+      // Si el número empieza con '54' y el número local tiene 10 dígitos, agregar el 9 después del 54
+      if (tel.startsWith('54')) {
+        if (tel.startsWith('549')) {
+          return tel;
+        } else if (tel.length === 12 && tel.startsWith('54')) {
+          // Ya tiene 54 y 9
+          return tel;
+        } else if (tel.length === 11 && tel.startsWith('54')) {
+          // Falta el 9 después del 54
+          return '549' + tel.slice(2);
+        }
+      }
+      // Para otros países, solo usar el número internacional sin el '+'
+      return tel;
+    })(),
     extras_list_block
   };
 

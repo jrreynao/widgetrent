@@ -23,7 +23,7 @@ const StepDatos = ({ onNext, onBack, initialData = {}, extrasSeleccionados = [] 
     const errs = {};
     if (!nombre.trim()) errs.nombre = "El nombre es obligatorio";
     if (!email.match(/^[^@\s]+@[^@\s]+\.[^@\s]+$/)) errs.email = "Email inválido";
-    if (!telefono.match(/^\d{6,}$/)) errs.telefono = "Teléfono inválido";
+    if (!telefono || telefono.replace(/\D/g, '').length < 8) errs.telefono = "Teléfono inválido";
     if (!dni.trim()) errs.dni = "DNI o Pasaporte obligatorio";
     if (mostrarDireccion && !direccion.trim()) errs.direccion = "La dirección es obligatoria";
     setErrores(errs);
@@ -80,37 +80,16 @@ const StepDatos = ({ onNext, onBack, initialData = {}, extrasSeleccionados = [] 
         <label>
           Teléfono
           <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <input
-              list="codigos-pais"
-              value={codigoPais}
-              onChange={e => setCodigoPais(e.target.value)}
-              style={{ minWidth: 120, borderRadius: 6, border: '1px solid #ddd', background: '#fafafa', fontSize: '1rem', padding: '0.5rem 0.3rem' }}
-              placeholder="País o código"
-              autoComplete="off"
-            />
-            <datalist id="codigos-pais">
-              <option value="+54 Argentina">🇦🇷 +54 Argentina</option>
-              <option value="+598 Uruguay">🇺🇾 +598 Uruguay</option>
-              <option value="+55 Brasil">🇧🇷 +55 Brasil</option>
-              <option value="+56 Chile">🇨🇱 +56 Chile</option>
-              <option value="+1 Estados Unidos">🇺🇸 +1 Estados Unidos</option>
-              <option value="+34 España">🇪🇸 +34 España</option>
-              <option value="+52 México">🇲🇽 +52 México</option>
-              <option value="+57 Colombia">🇨🇴 +57 Colombia</option>
-              <option value="+51 Perú">🇵🇪 +51 Perú</option>
-              <option value="+593 Ecuador">🇪🇨 +593 Ecuador</option>
-              <option value="+595 Paraguay">🇵🇾 +595 Paraguay</option>
-              <option value="+507 Panamá">🇵🇦 +507 Panamá</option>
-              <option value="+591 Bolivia">🇧🇴 +591 Bolivia</option>
-              <option value="+58 Venezuela">🇻🇪 +58 Venezuela</option>
-              <option value="+53 Cuba">🇨🇺 +53 Cuba</option>
-            </datalist>
-            <input
-              type="tel"
+            <PhoneInput
+              country={'ar'}
               value={telefono}
-              onChange={e => setTelefono(e.target.value)}
-              placeholder="Número sin código"
-              style={{ flex: 1 }}
+              onChange={setTelefono}
+              inputStyle={{ width: '100%' }}
+              containerStyle={{ width: '100%' }}
+              enableSearch
+              preferredCountries={['ar','uy','br','cl','us','es','mx','co','pe']}
+              specialLabel=""
+              inputProps={{ required: true }}
             />
           </div>
           {errores.telefono && <span className="datos-error">{errores.telefono}</span>}

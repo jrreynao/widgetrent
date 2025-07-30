@@ -35,6 +35,27 @@
 }
 /* Moderno igual que StepFechas */
 .datos-fields input, .datos-fields textarea {
+/* Estilo para el select de código de país */
+.datos-fields select {
+  padding: 0.4rem 0.5rem;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+  background: #fcfcfe;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+  font-family: inherit;
+  margin-top: 0;
+  color: #222;
+  width: 100%;
+  box-sizing: border-box;
+}
+.datos-fields select:focus {
+  border: 2px solid #ff6600;
+  box-shadow: 0 0 0 2px #ff660033;
+  outline: none;
+}
   padding: 0.4rem 0.5rem;
   border: 1.5px solid #e0e0e0;
   border-radius: 8px;
