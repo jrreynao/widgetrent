@@ -1,10 +1,22 @@
 import nodemailer from 'nodemailer';
+import fs from 'fs';
+import path from 'path';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
-  const { form, htmlCliente, htmlAdmin } = req.body;
-  if (!form || !htmlCliente || !htmlAdmin) return res.status(400).json({error: 'Faltan datos'});
+  const { form } = req.body;
+  if (!form) return res.status(400).json({error: 'Faltan datos'});
+
+  // Leer plantillas desde disco
+  let htmlCliente = '';
+  let htmlAdmin = '';
+  try {
+    htmlCliente = fs.readFileSync(path.join(process.cwd(), 'public', 'email_templates', 'correo_cliente.html'), 'utf8');
+    htmlAdmin = fs.readFileSync(path.join(process.cwd(), 'public', 'email_templates', 'correo_admin.html'), 'utf8');
+  } catch (e) {
+    return res.status(500).json({error: 'No se pudo leer la plantilla de correo'});
+  }
 
   // Configuración SMTP
   const transporter = nodemailer.createTransport({

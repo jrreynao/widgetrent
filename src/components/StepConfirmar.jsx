@@ -39,12 +39,19 @@ const StepConfirmar = ({ form, vehiculos, extras, onBack, onSubmit }) => {
         },
         body: JSON.stringify(data)
       });
-      const res = await response.json();
-      if (res.ok) {
+      let res;
+      try {
+        res = await response.json();
+      } catch (jsonError) {
+        // Si la respuesta no es JSON, mostrar error amigable
+        alert('Error inesperado en el servidor. Intenta más tarde.');
+        return;
+      }
+      if (res && res.ok) {
         alert('¡Reserva enviada con éxito!');
         if (onSubmit) onSubmit();
       } else {
-        alert('Error: ' + (res.error || 'No se pudo enviar la reserva'));
+        alert('Error: ' + (res && res.error ? res.error : 'No se pudo enviar la reserva'));
       }
     } catch (e) {
       alert('Error de conexión: ' + e.message);
@@ -139,7 +146,7 @@ const StepConfirmar = ({ form, vehiculos, extras, onBack, onSubmit }) => {
       </div>
       <div className="confirmar-btns">
         <button type="button" className="back-btn-confirmar" onClick={onBack}>Atrás</button>
-        <button type="button" className="next-btn-confirmar" onClick={enviarReserva}>Confirmar reserva</button>
+        <button type="button" className="next-btn-confirmar" onClick={e => { e.preventDefault(); enviarReserva(); }}>Confirmar reserva</button>
       </div>
     </div>
   );
