@@ -17,12 +17,15 @@ export default async function handler(req, res) {
 
   // Configurar transporter de nodemailer
   const transporter = nodemailer.createTransport({
-    host: 'smtp.titan.email',
-    port: 465,
-    secure: true,
+    host: process.env.SMTP_HOST || 'mail.isracarent.com',
+    port: process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : 465,
+    secure: true, // SSL
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS
+    },
+    tls: {
+      rejectUnauthorized: false
     }
   });
 
