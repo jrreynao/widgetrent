@@ -1,0 +1,84 @@
+@import 'react-datepicker/dist/react-datepicker.css';
+:root {
+  /* Variables personalizables para adaptar el widget al sitio */
+  --widget-font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --widget-line-height: 1.5;
+  --widget-font-weight: 400;
+  --widget-color-scheme: light dark;
+  --widget-color: rgba(255, 255, 255, 0.87);
+  --widget-bg: #242424;
+  --widget-radius: 16px;
+  --widget-link: #646cff;
+  --widget-link-hover: #535bf2;
+  --widget-btn-bg: #1a1a1a;
+  --widget-btn-bg-light: #f9f9f9;
+  --widget-btn-border: #646cff;
+  --widget-title-color: #213547;
+  --widget-title-size: 3.2em;
+  font-family: var(--widget-font-family);
+  line-height: var(--widget-line-height);
+  font-weight: var(--widget-font-weight);
+  color-scheme: var(--widget-color-scheme);
+  color: var(--widget-color);
+  background-color: var(--widget-bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: var(--widget-link);
+  text-decoration: inherit;
+}
+a:hover {
+  color: var(--widget-link-hover);
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100%;
+  border-radius: var(--widget-radius);
+}
+
+h1 {
+  font-size: var(--widget-title-size);
+  line-height: 1.1;
+  color: var(--widget-title-color);
+}
+
+button {
+  border-radius: var(--widget-radius);
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: var(--widget-btn-bg);
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: var(--widget-btn-border);
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: var(--widget-title-color);
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: var(--widget-btn-bg-light);
+  }
+}

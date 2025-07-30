@@ -1,0 +1,54 @@
+<!-- Plantilla de correo para el cliente (reserva) -->
+<table style="width:100%;background:#f4f6fb;padding:0;margin:0;font-family:Arial,sans-serif">
+  <tr>
+    <td>
+      <table style="max-width:520px;width:100%;margin:48px auto 48px auto;background:#fff;border-radius:18px">
+        <tr>
+          <td style="padding:40px 32px">
+            <!-- Header -->
+            <div style="text-align:center;padding-bottom:18px;border-bottom:1px solid #e0e6ed">
+              <img src="https://plugin.markaimg.com/public/00a4b1ae/MgELJvxkmy4X5D2JnOdNkjOhueFZap.png" alt="Logo Isracar Rent" width="80" style="display:block;margin:0 auto 10px auto">
+            </div>
+            <!-- Title -->
+            <h1 style="color:#2d3a4b;font-size:1.6em;margin:28px 0 0 0;font-weight:900;text-align:center;letter-spacing:0.5px">Hola %customer_full_name%,</h1>
+            <!-- Content -->
+            <div style="margin:28px 0 18px 0;color:#4a5568;font-size:1.12em;line-height:1.7;text-align:center">
+              ¡Gracias por elegirnos para tu próxima aventura! Estamos muy emocionados de acompañarte en este viaje. Solo falta un paso para que puedas disfrutar de tu vehículo alquilado.<br><br>
+              Para finalizar tu reserva y realizar el pago de manera rápida y segura, haz clic en el siguiente botón y uno de nuestros asesores te ayudará personalmente por WhatsApp:
+            </div>
+            <table style="background:#f4f4fe;border-radius:14px;margin:24px 0;width:100%">
+              <tr>
+                <td style="padding:24px 18px;text-align:center">
+                  <h2 style="color:#101828;font-size:1.25em;text-align:center;margin:0 0 12px 0;font-weight:700">Detalles de tu reserva</h2>
+                  <p style="color:#101828;font-size:1em;text-align:center;margin:0 0 12px 0;line-height:1.5">
+                    <b>Fecha de inicio:</b> %appointment_date%<br>
+                    <b>Duración:</b> %appointment_duration%
+                  </p>
+                  <a href="https://wa.link/ivwnwy" style="display:inline-block;margin-top:18px;padding:13px 32px;background:#2563eb;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;font-size:1em" target="_blank">Finalizar reserva con un asesor</a>
+                </td>
+              </tr>
+            </table>
+            <div style="margin:28px 0 18px 0;color:#4a5568;font-size:1.08em;line-height:1.7;text-align:center">
+              <!-- Mensaje condicional según delivery -->
+              %mensaje_entrega_cliente%
+              ¿Tienes dudas? ¡Estamos para ayudarte! Escríbenos por WhatsApp y haremos que tu experiencia sea simple y agradable.<br><br>
+              ¡Esperamos verte pronto al volante!
+            </div>
+            </div>
+            <div style="text-align:center;margin-top:24px">
+              <img src="https://plugin.markaimg.com/public/00a4b1ae/iZBUU6PfacyMFnPU9pDzoqM8n6R9jw.png" width="90" alt="Vehículo Isracar Rent" style="border-radius:12px" />
+            </div>
+            <!-- Footer -->
+            <div style="text-align:center;color:#667085;font-size:0.98em;border-top:1px solid #e0e6ed;padding-top:18px;margin-top:32px;line-height:1.6">
+              <b>IsraCar Rent</b><br>
+              Av. de los Lagos 7008, B1670 Rincón de Milberg, Provincia de Buenos Aires<br>
+              <a href="mailto:info@isracarent.com" style="color:#2563eb;text-decoration:none;font-weight:500">info@isracarent.com</a><br>
+              <a href="tel:+5491165920909" style="color:#2563eb;text-decoration:none;font-weight:500">+54 9 11 6592-0909</a><br>
+              <span style="color:#a0aec0;font-size:0.95em">Este es un mensaje automático, por favor no respondas a este correo.</span>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
