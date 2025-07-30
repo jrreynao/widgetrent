@@ -14,11 +14,12 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
+      input: 'src/widget.jsx',
       output: {
-        entryFileNames: 'assets/index.js',
-        chunkFileNames: 'assets/index.js',
+        entryFileNames: 'widget.js',
+        chunkFileNames: 'widget.[name].js',
         assetFileNames: ({name}) => {
-          if (name && name.endsWith('.css')) return 'assets/index.css';
+          if (name && name.endsWith('.css')) return 'widget.css';
           return 'assets/[name][extname]';
         }
       }

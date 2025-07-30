@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   const { form } = req.body;
   if (!form) return res.status(400).json({error: 'Faltan datos'});
 
-  // Leer plantillas desde disco
+  // Leer plantillas desde disco SIEMPRE
   let htmlCliente = '';
   let htmlAdmin = '';
   try {
@@ -17,6 +17,13 @@ export default async function handler(req, res) {
   } catch (e) {
     return res.status(500).json({error: 'No se pudo leer la plantilla de correo'});
   }
+
+  // Reemplazar todas las variables en la plantilla
+  function fillTemplate(template, vars) {
+    return template.replace(/%([a-zA-Z0-9_]+)%/g, (_, key) => vars[key] || '');
+  }
+
+  // ...el resto del código ya construye el objeto vars correctamente y lo usa para reemplazar las variables...
 
   // Configuración SMTP
   const transporter = nodemailer.createTransport({
@@ -88,7 +95,8 @@ export default async function handler(req, res) {
     text_direccionentrega: direccionEntrega ? direccionEntrega : 'Nuestra Agencia.',
     text_direccionentrega_block: mostrarDireccion && direccionEntrega ? `<b>Dirección de entrega:</b> ${direccionEntrega}` : '',
     booking_id: Math.floor(Math.random()*1000000),
-    tarjeta_credito
+    tarjeta_credito,
+    customer_whatsapp_link: form.datos?.telefono ? `549${String(form.datos.telefono).replace(/\D/g, '')}` : ''
   };
 
   let mensaje_entrega_cliente = '';
