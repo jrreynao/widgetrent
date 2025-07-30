@@ -86,10 +86,6 @@ export default async function handler(req, res) {
     return total ? `$${Number(total).toLocaleString('es-AR')}` : '';
   })();
   // Lógica para mostrar dirección de entrega según extras
-// Definir text_direccionentrega para compatibilidad con plantillas antiguas
-const text_direccionentrega = mostrarDireccion && direccionEntrega
-  ? direccionEntrega
-  : 'Av. de los Lagos 7008, B1670 Rincón de Milberg';
 let direccionEntrega = '';
 let mostrarDireccion = false;
 if (form.extras && Array.isArray(form.extras)) {
@@ -99,6 +95,10 @@ if (form.extras && Array.isArray(form.extras)) {
   });
   direccionEntrega = mostrarDireccion ? (form.datos?.direccion_entrega || '') : '';
 }
+// Definir text_direccionentrega para compatibilidad con plantillas antiguas
+const text_direccionentrega = mostrarDireccion && direccionEntrega
+  ? direccionEntrega
+  : 'Av. de los Lagos 7008, B1670 Rincón de Milberg';
 // Mensaje para el cliente (siempre explicativo)
 const text_direccionentrega_block = mostrarDireccion && direccionEntrega
   ? `Llevaremos el vehículo a la dirección que indicaste (<b>${direccionEntrega}</b>) el día <b>${appointment_date}</b> a las <b>${hora_entregadevehiculo}</b>. Si tienes alguna duda o necesitas modificar la dirección, contáctanos.`
