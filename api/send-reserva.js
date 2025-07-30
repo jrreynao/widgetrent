@@ -14,8 +14,19 @@ export default async function handler(req, res) {
   const { form } = req.body;
   if (!form) return res.status(400).json({error: 'Faltan datos'});
 
+  // Configurar transporter de nodemailer
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.titan.email',
+    port: 465,
+    secure: true,
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS
+    }
+  });
+
   // Variables necesarias
-  // TODO: Asegúrate de definir direccionEntrega, mostrarDireccion, tarjeta_credito, extras_list_block, transporter, fillTemplate, htmlCliente, htmlAdmin antes de usar
+  // TODO: Asegúrate de definir direccionEntrega, mostrarDireccion, tarjeta_credito, extras_list_block, fillTemplate, htmlCliente, htmlAdmin antes de usar
   const booking_id = Math.floor(Math.random()*1000000);
   const customer_full_name = form.datos?.nombre || '';
   const customer_email = form.datos?.email || '';
