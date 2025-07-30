@@ -28,6 +28,10 @@ export default async function handler(req, res) {
 
   // Variables necesarias
   // TODO: Asegúrate de definir direccionEntrega, mostrarDireccion, tarjeta_credito, extras_list_block, fillTemplate, htmlCliente, htmlAdmin antes de usar
+
+  // Leer las plantillas de correo HTML
+  const htmlCliente = fs.readFileSync(path.resolve(__dirname, '../public/email_templates/correo_cliente.html'), 'utf8');
+  const htmlAdmin = fs.readFileSync(path.resolve(__dirname, '../public/email_templates/correo_admin.html'), 'utf8');
   const booking_id = Math.floor(Math.random()*1000000);
   const customer_full_name = form.datos?.nombre || '';
   const customer_email = form.datos?.email || '';
