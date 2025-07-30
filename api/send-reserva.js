@@ -86,6 +86,10 @@ export default async function handler(req, res) {
     return total ? `$${Number(total).toLocaleString('es-AR')}` : '';
   })();
   // Lógica para mostrar dirección de entrega según extras
+// Definir text_direccionentrega para compatibilidad con plantillas antiguas
+const text_direccionentrega = mostrarDireccion && direccionEntrega
+  ? direccionEntrega
+  : 'Av. de los Lagos 7008, B1670 Rincón de Milberg';
 let direccionEntrega = '';
 let mostrarDireccion = false;
 if (form.extras && Array.isArray(form.extras)) {
