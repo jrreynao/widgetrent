@@ -7,6 +7,49 @@ import iconExtras from "../assets/icon-extras.svg";
 import iconUser from "../assets/icon-user.svg";
 
 const StepConfirmar = ({ form, vehiculos, extras, onBack, onSubmit }) => {
+  // Función para enviar la reserva al backend
+  const enviarReserva = async () => {
+    // Construir el objeto de datos para el backend
+    const vehiculoSeleccionado = vehiculos.find(v => v.id === form.vehiculo?.id);
+    const extrasSeleccionados = extras.filter(e => form.extras.includes(e.id));
+    const totalExtras = extrasSeleccionados.reduce((sum, e) => sum + (parseInt(e.price) || 0), 0);
+    const totalVehiculo = vehiculoSeleccionado && vehiculoSeleccionado.precio ? parseInt(vehiculoSeleccionado.precio) : 0;
+    const total = totalVehiculo + totalExtras;
+
+    // Ejemplo de plantilla simple
+    const htmlCliente = `<p>Hola %customer_full_name%, tu reserva está confirmada. Total: %appointment_amount%</p>`;
+    const htmlAdmin = `<p>Reserva de %customer_full_name% recibida. Total: %appointment_amount%</p>`;
+
+    const data = {
+      form: {
+        ...form,
+        vehiculo: vehiculoSeleccionado,
+        allExtras: extras,
+        total
+      },
+      htmlCliente,
+      htmlAdmin
+    };
+
+    try {
+      const response = await fetch('https://widgetrent.onrender.com/api/send-reserva', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      const res = await response.json();
+      if (res.ok) {
+        alert('¡Reserva enviada con éxito!');
+        if (onSubmit) onSubmit();
+      } else {
+        alert('Error: ' + (res.error || 'No se pudo enviar la reserva'));
+      }
+    } catch (e) {
+      alert('Error de conexión: ' + e.message);
+    }
+  };
   // Buscar datos del vehículo seleccionado
   const vehiculo = vehiculos.find(v => v.id === form.vehiculo?.id);
   // Buscar extras seleccionados
@@ -96,7 +139,7 @@ const StepConfirmar = ({ form, vehiculos, extras, onBack, onSubmit }) => {
       </div>
       <div className="confirmar-btns">
         <button type="button" className="back-btn-confirmar" onClick={onBack}>Atrás</button>
-        <button type="button" className="next-btn-confirmar" onClick={onSubmit}>Confirmar reserva</button>
+        <button type="button" className="next-btn-confirmar" onClick={enviarReserva}>Confirmar reserva</button>
       </div>
     </div>
   );
