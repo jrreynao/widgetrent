@@ -1,5 +1,6 @@
 
 import nodemailer from 'nodemailer';
+import { extras as allExtras } from '../src/data/extras.js';
 import fs from 'fs';
 import path from 'path';
 
