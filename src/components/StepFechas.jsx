@@ -50,7 +50,7 @@ export default function StepFechas({ onNext }) {
   const [fechaRetiro, setFechaRetiro] = useState(defaultRetiro);
   const [fechaDevolucion, setFechaDevolucion] = useState(null);
   const [horaRetiro, setHoraRetiro] = useState("08:00 AM");
-  const [horaDevolucion, setHoraDevolucion] = useState("06:00 PM");
+  const [horaDevolucion, setHoraDevolucion] = useState("14:00");
 
   const fechaRetiroStr = fechaRetiro ? dayjs(fechaRetiro).format("YYYY-MM-DD") : "";
   const fechaDevolucionStr = fechaDevolucion ? dayjs(fechaDevolucion).format("YYYY-MM-DD") : "";
@@ -82,7 +82,7 @@ export default function StepFechas({ onNext }) {
               <div className="branch-value">{sucursal}</div>
             </div>
             <div className="field widgetisracar-calendar-field">
-              <label>Fecha de retiro</label>
+              <label>Día de inicio de alquiler</label>
               <DatePicker
                 selected={fechaRetiro}
                 onChange={date => {
@@ -102,18 +102,16 @@ export default function StepFechas({ onNext }) {
                 calendarClassName="widgetisracar-datepicker-calendar"
                 locale="es"
               />
-              <div className="widgetisracar-step-fechas-help">Selecciona la fecha de retiro en el calendario.</div>
             </div>
             <HoraField
               id="horaRetiro"
-              label="Hora de retiro"
+              label="Hora de entrega de vehículo"
               value={horaRetiro.slice(0,5)}
               onChange={val => setHoraRetiro(val + (horaRetiro.includes('PM') ? ' PM' : ' AM'))}
-              helpText="Selecciona la hora de retiro."
               classPrefix="widgetisracar"
             />
             <div className="field widgetisracar-calendar-field">
-              <label>Fecha de devolución</label>
+              <label>Día de fin de alquiler</label>
               <DatePicker
                 selected={fechaDevolucion}
                 onChange={date => setFechaDevolucion(date)}
@@ -129,14 +127,12 @@ export default function StepFechas({ onNext }) {
                 locale="es"
                 disabled={!fechaRetiro}
               />
-              <div className="widgetisracar-step-fechas-help">Selecciona la fecha de devolución en el calendario.</div>
             </div>
             <HoraField
               id="horaDevolucion"
-              label="Hora de devolución"
+              label="Hora de devolución de vehículo"
               value={horaDevolucion.slice(0,5)}
               onChange={val => setHoraDevolucion(val + (horaDevolucion.includes('PM') ? ' PM' : ' AM'))}
-              helpText="Selecciona la hora de devolución."
               classPrefix="widgetisracar"
             />
             <div className="next-btn-field">

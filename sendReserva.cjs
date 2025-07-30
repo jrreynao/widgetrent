@@ -34,6 +34,19 @@ app.post('/api/send-reserva', async (req, res) => {
   const { form, htmlCliente, htmlAdmin } = req.body;
   if (!form || !htmlCliente || !htmlAdmin) return res.status(400).json({error: 'Faltan datos'});
   // ...existing code...
+  // Generar bloque HTML para extras con precios (admin)
+  let extras_list_block = '';
+  if (form.extras && form.extras.length > 0) {
+    const extrasSeleccionados = (form.extras || []).map(id => {
+      const extra = allExtras.find(e => e.id === id);
+      return extra ? extra : null;
+    }).filter(Boolean);
+    if (extrasSeleccionados.length > 0) {
+      extras_list_block = `<div style="margin:18px 0 0 0;padding:0 0 0 0.5em;font-size:1.08em"><b>Servicios extras:</b><ul style="margin:8px 0 0 0;padding:0 0 0 1.2em;">` +
+        extrasSeleccionados.map(e => `<li>${e.name} <span style='color:#ff6600;font-weight:600;'>$${parseInt(e.price).toLocaleString('es-AR')}</span></li>`).join('') +
+        `</ul></div>`;
+    }
+  }
   // Dirección de entrega para el admin: siempre mostrar la dirección si existe
   let direccionEntrega = form.fechas?.direccionEntrega || form.datos?.direccion || '';
   // Para el cliente, mantener la lógica de mostrarDireccion
@@ -103,6 +116,7 @@ app.post('/api/send-reserva', async (req, res) => {
     mensaje_entrega_cliente = `Deberás retirar tu vehículo en nuestra agencia. Te esperamos en <a href="https://g.co/kgs/gj5UX3Z" style="color:#2563eb;text-decoration:none;font-weight:500" target="_blank">Av. de los Lagos 7008, B1670 Rincón de Milberg</a> a la hora acordada.`;
   }
   vars.mensaje_entrega_cliente = mensaje_entrega_cliente;
+  vars.extras_list_block = extras_list_block;
 
   // ...vars ya está declarado antes del mensaje_entrega_cliente...
 

@@ -74,6 +74,20 @@ export default async function handler(req, res) {
     tarjeta_credito = form.datos.tieneTarjeta === true || form.datos.tieneTarjeta === 'si' ? 'Sí' : 'No';
   }
 
+  // Generar bloque HTML para extras con precios (admin)
+  let extras_list_block = '';
+  if (form.extras && form.extras.length > 0) {
+    const extrasSeleccionados = (form.extras || []).map(id => {
+      const extra = allExtras.find(e => e.id === id);
+      return extra ? extra : null;
+    }).filter(Boolean);
+    if (extrasSeleccionados.length > 0) {
+      extras_list_block = `<div style="margin:18px 0 0 0;padding:0 0 0 0.5em;font-size:1.08em"><b>Servicios extras:</b><ul style="margin:8px 0 0 0;padding:0 0 0 1.2em;">` +
+        extrasSeleccionados.map(e => `<li>${e.name} <span style='color:#ff6600;font-weight:600;'>$${parseInt(e.price).toLocaleString('es-AR')}</span></li>`).join('') +
+        `</ul></div>`;
+    }
+  }
+
   const vars = {
     customer_full_name: form.datos?.nombre || '',
     customer_email: form.datos?.email || '',
@@ -96,7 +110,8 @@ export default async function handler(req, res) {
     text_direccionentrega_block: mostrarDireccion && direccionEntrega ? `<b>Dirección de entrega:</b> ${direccionEntrega}` : '',
     booking_id: Math.floor(Math.random()*1000000),
     tarjeta_credito,
-    customer_whatsapp_link: form.datos?.telefono ? `549${String(form.datos.telefono).replace(/\D/g, '')}` : ''
+    customer_whatsapp_link: form.datos?.telefono ? `549${String(form.datos.telefono).replace(/\D/g, '')}` : '',
+    extras_list_block
   };
 
   let mensaje_entrega_cliente = '';

@@ -7,8 +7,18 @@ import iconExtras from "../assets/icon-extras.svg";
 import iconUser from "../assets/icon-user.svg";
 
 const StepConfirmar = ({ form, vehiculos, extras, onBack, onSubmit }) => {
+  const [enviando, setEnviando] = useState(false);
+  // Detectar si el usuario viene de un ad (UTM en la URL)
+  const [isAdUser] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return (
+      params.get('utm_source') || params.get('utm_medium') || params.get('utm_campaign')
+    );
+  });
   // Función para enviar la reserva al backend
   const enviarReserva = async () => {
+    if (enviando) return;
+    setEnviando(true);
     // Construir el objeto de datos para el backend
     const vehiculoSeleccionado = vehiculos.find(v => v.id === form.vehiculo?.id);
     const extrasSeleccionados = extras.filter(e => form.extras.includes(e.id));
@@ -44,17 +54,32 @@ const StepConfirmar = ({ form, vehiculos, extras, onBack, onSubmit }) => {
         res = await response.json();
       } catch (jsonError) {
         // Si la respuesta no es JSON, mostrar error amigable
-        alert('Error inesperado en el servidor. Intenta más tarde.');
+        // No mostrar alerta molesta, solo salir silenciosamente
+        setEnviando(false);
         return;
       }
       if (res && res.ok) {
         alert('¡Reserva enviada con éxito!');
+        // Disparar conversión solo si viene de ad
+        if (isAdUser && window.gtag) {
+          window.gtag('event', 'conversion', {
+            'send_to': 'AW-11509534208/ZvHRCKC-jfoZEICclvAq',
+            'value': 1.0,
+            'currency': 'ARS',
+            'transaction_id': ''
+          });
+        }
         if (onSubmit) onSubmit();
+        window.location.href = 'https://isracarent.com/thank-you';
+        setEnviando(false);
       } else {
         alert('Error: ' + (res && res.error ? res.error : 'No se pudo enviar la reserva'));
+        setEnviando(false);
       }
     } catch (e) {
-      alert('Error de conexión: ' + e.message);
+      // No mostrar alerta de error de conexión, solo salir silenciosamente
+      setEnviando(false);
+      return;
     }
   };
   // Buscar datos del vehículo seleccionado
@@ -146,7 +171,7 @@ const StepConfirmar = ({ form, vehiculos, extras, onBack, onSubmit }) => {
       </div>
       <div className="confirmar-btns">
         <button type="button" className="back-btn-confirmar" onClick={onBack}>Atrás</button>
-        <button type="button" className="next-btn-confirmar" onClick={e => { e.preventDefault(); enviarReserva(); }}>Confirmar reserva</button>
+        <button type="button" className="next-btn-confirmar" onClick={e => { e.preventDefault(); enviarReserva(); }} disabled={enviando}>Enviar cotización</button>
       </div>
     </div>
   );

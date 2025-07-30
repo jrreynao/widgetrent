@@ -5,6 +5,9 @@ body, #widgetisracar {
   box-sizing: border-box !important;
   min-width: 0 !important;
   max-width: 100% !important;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
 }
 .acordeon-block {
   padding: 0.5rem 1rem 0.5rem 1rem;
@@ -27,39 +30,49 @@ body, #widgetisracar {
 .acordeon-toggle:hover {
   color: #ff6600;
 }
-.step-confirmar {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  background: #fff;
-  border-radius: 0;
-  box-shadow: none;
-  padding: 0;
-  width: 100% !important;
-  margin: 0 !important;
-  box-sizing: border-box;
-}
-.confirmar-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #1b7e3c;
-  text-align: center;
-  margin-bottom: 0.7rem;
-  letter-spacing: 0.01em;
-}
-/* Moderno igual que StepFechas */
-.confirmar-block {
-  background: #fcfcfe;
-  border-radius: 14px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
-  border: 1.5px solid #e0e0e0;
-  padding: 1rem 1.2rem;
-  margin-bottom: 0.7rem;
+/* Espaciado entre botones de confirmación */
+.confirmar-btns {
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
   width: 100%;
+  margin-top: 0.2rem;
+}
+.back-btn-confirmar {
+  width: 100%;
+  background: linear-gradient(90deg, #eee 0%, #ccc 100%);
+  color: #333;
+  border: none;
+  border-radius: 6px;
+  padding: 0.7rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 0 2px 8px rgba(255,102,0,0.08);
+  max-width: 100%;
   box-sizing: border-box;
+}
+.next-btn-confirmar {
+  width: 100%;
+  background: linear-gradient(90deg, #ff6600 0%, #ff9900 100%);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.7rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 0 2px 8px rgba(255,102,0,0.08);
+  max-width: 100%;
+  box-sizing: border-box;
+}
+/* Estado deshabilitado del botón de enviar cotización */
+.next-btn-confirmar:disabled {
+  background: #eee;
+  color: #aaa;
+  cursor: not-allowed;
 }
 .confirmar-label {
   font-size: 0.8rem;
