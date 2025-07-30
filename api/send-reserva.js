@@ -100,6 +100,25 @@ export default async function handler(req, res) {
       const extra = allExtras.find(e => e.id === id);
       return extra ? (extra.name || extra.nombre || id) : id;
     }).filter(Boolean).join(', ') || 'Sin extras',
+    whatsapp_factura: (() => {
+      let factura = '🧾 *Resumen de Reserva*%0A';
+      factura += `Orden: ${vars.booking_id}%0A`;
+      factura += `Nombre: ${form.datos?.nombre || ''}%0A`;
+      factura += `Vehículo: ${form.vehiculo?.nombre || ''}%0A`;
+      factura += `Fechas: ${vars.appointment_date} a ${vars.fechadev}%0A`;
+      factura += 'Extras:%0A';
+      if (form.extras && form.extras.length > 0) {
+        (form.extras || []).forEach(id => {
+          const extra = allExtras.find(e => e.id === id);
+          if (extra) factura += `- ${extra.name}: $${parseInt(extra.price).toLocaleString('es-AR')}%0A`;
+        });
+      } else {
+        factura += '- Sin extras%0A';
+      }
+      factura += `Total: ${vars.appointment_amount} (por ${vars.appointment_duration})%0A%0A`;
+      factura += 'Deseo terminar mi proceso de reserva y me gustaría saber los métodos de pago disponibles.';
+      return factura;
+    })(),
     appointment_date: form.fechas?.fechaRetiro || '',
     fechadev: form.fechas?.fechaDevolucion || '',
     hora_entregadevehiculo: form.fechas?.horaEntrega || form.fechas?.horaRetiro || '',
