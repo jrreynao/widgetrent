@@ -6,9 +6,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://dlnk.one',
+        target: 'https://widgetrent.onrender.com',
         changeOrigin: true,
-        rewrite: path => path.replace(/^\/api/, '')
+        // No rewrite, ya que la API espera /api/send-reserva
       }
     }
   },
