@@ -100,10 +100,12 @@ export default async function handler(req, res) {
       const extra = allExtras.find(e => e.id === id);
       return extra ? (extra.name || extra.nombre || id) : id;
     }).filter(Boolean).join(', ') || 'Sin extras',
-    appointment_date: form.fechas?.fechaEntrega || '',
+    appointment_date: form.fechas?.fechaRetiro || '',
     fechadev: form.fechas?.fechaDevolucion || '',
     hora_entregadevehiculo: form.fechas?.horaEntrega || form.fechas?.horaRetiro || '',
-    hora_devolucionvehiculo: form.fechas?.horaDevolucion || '',
+    hora_devolucionvehiculo: (form.fechas?.horaDevolucion && /am|pm/i.test(form.fechas.horaDevolucion))
+      ? form.fechas.horaDevolucion
+      : (form.fechas?.horaDevolucion ? form.fechas.horaDevolucion + ' hs' : ''),
     appointment_duration: diasAlquiler ? `${diasAlquiler} días` : '',
     appointment_amount: form.total ? `$${Number(form.total).toLocaleString('es-AR')}` : '',
     text_direccionentrega: direccionEntrega ? direccionEntrega : 'Nuestra Agencia.',
