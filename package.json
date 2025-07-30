@@ -19,6 +19,7 @@
     "react-datepicker": "^8.4.0",
     "react-dom": "^19.1.0",
     "react-native-ui-datepicker": "^3.1.2",
+    "react-phone-input-2": "^2.15.1",
     "react-to-webcomponent": "^2.0.1"
   },
   "devDependencies": {

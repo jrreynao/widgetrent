@@ -107,7 +107,22 @@ export default async function handler(req, res) {
       ? form.fechas.horaDevolucion
       : (form.fechas?.horaDevolucion ? form.fechas.horaDevolucion + ' hs' : ''),
     appointment_duration: diasAlquiler ? `${diasAlquiler} días` : '',
-    appointment_amount: form.total ? `$${Number(form.total).toLocaleString('es-AR')}` : '',
+    appointment_amount: (() => {
+      // Calcular total backend por si frontend no lo envía bien
+      let totalVehiculo = 0;
+      if (form.vehiculo && form.vehiculo.precio) {
+        totalVehiculo = parseInt(form.vehiculo.precio) * (diasAlquiler || 1);
+      }
+      let totalExtras = 0;
+      if (form.extras && Array.isArray(form.extras)) {
+        totalExtras = (form.extras || []).map(id => {
+          const extra = allExtras.find(e => e.id === id);
+          return extra ? parseInt(extra.price) || 0 : 0;
+        }).reduce((a,b)=>a+b,0);
+      }
+      const total = totalVehiculo + totalExtras;
+      return total ? `$${Number(total).toLocaleString('es-AR')}` : '';
+    })(),
     text_direccionentrega: direccionEntrega ? direccionEntrega : 'Nuestra Agencia.',
     text_direccionentrega_block: mostrarDireccion && direccionEntrega ? `<b>Dirección de entrega:</b> ${direccionEntrega}` : '',
     booking_id: Math.floor(Math.random()*1000000),

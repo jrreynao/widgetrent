@@ -23,7 +23,17 @@ const StepConfirmar = ({ form, vehiculos, extras, onBack, onSubmit }) => {
     const vehiculoSeleccionado = vehiculos.find(v => v.id === form.vehiculo?.id);
     const extrasSeleccionados = extras.filter(e => form.extras.includes(e.id));
     const totalExtras = extrasSeleccionados.reduce((sum, e) => sum + (parseInt(e.price) || 0), 0);
-    const totalVehiculo = vehiculoSeleccionado && vehiculoSeleccionado.precio ? parseInt(vehiculoSeleccionado.precio) : 0;
+    // Calcular días de alquiler
+    let diasAlquiler = 1;
+    if (form.fechas?.fechaRetiro && form.fechas?.fechaDevolucion) {
+      try {
+        const d1 = new Date(form.fechas.fechaRetiro);
+        const d2 = new Date(form.fechas.fechaDevolucion);
+        const diff = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24));
+        diasAlquiler = diff > 0 ? diff : 1;
+      } catch {}
+    }
+    const totalVehiculo = vehiculoSeleccionado && vehiculoSeleccionado.precio ? parseInt(vehiculoSeleccionado.precio) * diasAlquiler : 0;
     const total = totalVehiculo + totalExtras;
 
     // Ejemplo de plantilla simple
@@ -92,7 +102,17 @@ const StepConfirmar = ({ form, vehiculos, extras, onBack, onSubmit }) => {
 
   // Calcular total
   const totalExtras = extrasSeleccionados.reduce((sum, e) => sum + (parseInt(e.price) || 0), 0);
-  const totalVehiculo = vehiculo && vehiculo.precio ? parseInt(vehiculo.precio) : 0;
+  // Calcular días de alquiler para mostrar
+  let diasAlquilerMostrar = 1;
+  if (form.fechas?.fechaRetiro && form.fechas?.fechaDevolucion) {
+    try {
+      const d1 = new Date(form.fechas.fechaRetiro);
+      const d2 = new Date(form.fechas.fechaDevolucion);
+      const diff = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24));
+      diasAlquilerMostrar = diff > 0 ? diff : 1;
+    } catch {}
+  }
+  const totalVehiculo = vehiculo && vehiculo.precio ? parseInt(vehiculo.precio) * diasAlquilerMostrar : 0;
   const total = totalVehiculo + totalExtras;
 
   // Acordeones
@@ -119,7 +139,7 @@ const StepConfirmar = ({ form, vehiculos, extras, onBack, onSubmit }) => {
           Total de la reserva
         </div>
         <div className="confirmar-value" style={{fontSize:'1.25em',fontWeight:700,color:'#ff6600'}}>
-          ${total.toLocaleString()}
+          ${total.toLocaleString()} <span style={{fontSize:'0.9em',color:'#444',fontWeight:400}}>(por {diasAlquilerMostrar} día{diasAlquilerMostrar>1?'s':''})</span>
         </div>
       </div>
       <div className="confirmar-block acordeon-block">
