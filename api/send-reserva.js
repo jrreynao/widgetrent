@@ -11,7 +11,7 @@ export default async function handler(req, res) {
   if (!form) return res.status(400).json({error: 'Faltan datos'});
 
   // Variables necesarias
-  // TODO: Asegúrate de definir allExtras, direccionEntrega, mostrarDireccion, tarjeta_credito, extras_list_block, diasAlquiler, transporter, fillTemplate, htmlCliente, htmlAdmin antes de usar
+  // TODO: Asegúrate de definir direccionEntrega, mostrarDireccion, tarjeta_credito, extras_list_block, transporter, fillTemplate, htmlCliente, htmlAdmin antes de usar
   const booking_id = Math.floor(Math.random()*1000000);
   const customer_full_name = form.datos?.nombre || '';
   const customer_email = form.datos?.email || '';
@@ -30,11 +30,21 @@ export default async function handler(req, res) {
   const hora_devolucionvehiculo = (form.fechas?.horaDevolucion && /am|pm/i.test(form.fechas.horaDevolucion))
     ? form.fechas.horaDevolucion
     : (form.fechas?.horaDevolucion ? form.fechas.horaDevolucion + ' hs' : '');
-  const appointment_duration = typeof diasAlquiler !== 'undefined' ? `${diasAlquiler} días` : '';
+
+  // Calcular diasAlquiler
+  let diasAlquiler = 1;
+  if (form.fechas?.fechaRetiro && form.fechas?.fechaDevolucion) {
+    const d1 = new Date(form.fechas.fechaRetiro);
+    const d2 = new Date(form.fechas.fechaDevolucion);
+    const diff = Math.round((d2 - d1) / (1000 * 60 * 60 * 24));
+    diasAlquiler = diff > 0 ? diff : 1;
+  }
+
+  const appointment_duration = `${diasAlquiler} días`;
   const appointment_amount = (() => {
     let totalVehiculo = 0;
     if (form.vehiculo && form.vehiculo.precio) {
-      totalVehiculo = parseInt(form.vehiculo.precio) * (diasAlquiler || 1);
+      totalVehiculo = parseInt(form.vehiculo.precio) * diasAlquiler;
     }
     let totalExtras = 0;
     if (form.extras && Array.isArray(form.extras)) {
