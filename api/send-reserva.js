@@ -12,8 +12,8 @@ export default async function handler(req, res) {
     port: 465,
     secure: true,
     auth: {
-      user: 'info@isracarent.com',
-      pass: 'Israwordpress1.'
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS
     },
     tls: {
       rejectUnauthorized: false
