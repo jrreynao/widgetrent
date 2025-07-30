@@ -107,7 +107,9 @@ const text_direccionentrega_block = mostrarDireccion && direccionEntrega
 const text_direccionentrega_admin = mostrarDireccion && direccionEntrega
   ? `<b>Dirección de entrega:</b> ${direccionEntrega}`
   : `<b>Retiro en sede:</b> Av. de los Lagos 7008, B1670 Rincón de Milberg`;
-  const tarjeta_credito_var = typeof tarjeta_credito !== 'undefined' ? tarjeta_credito : '';
+  const tarjeta_credito_var = typeof form.datos?.tieneTarjeta !== 'undefined'
+    ? (form.datos.tieneTarjeta ? 'Sí' : 'No')
+    : '';
   const customer_whatsapp_link = (() => {
     if (!form.datos?.telefono) return '';
     let tel = String(form.datos.telefono).replace(/[^0-9]/g, '');
