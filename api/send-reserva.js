@@ -86,15 +86,23 @@ export default async function handler(req, res) {
     return total ? `$${Number(total).toLocaleString('es-AR')}` : '';
   })();
   // Lógica para mostrar dirección de entrega según extras
-  let direccionEntrega = '';
-  let mostrarDireccion = false;
-  if (form.extras && Array.isArray(form.extras)) {
-    // El id del extra de entrega debe coincidir con el que uses en src/data/extras.js, por ejemplo 'entrega_domicilio'
-    mostrarDireccion = form.extras.includes('entrega_domicilio');
-    direccionEntrega = mostrarDireccion ? (form.datos?.direccion_entrega || '') : '';
-  }
-  const text_direccionentrega = mostrarDireccion && direccionEntrega ? direccionEntrega : 'Nuestra Agencia.';
-  const text_direccionentrega_block = mostrarDireccion && direccionEntrega ? `<b>Dirección de entrega:</b> ${direccionEntrega}` : '';
+let direccionEntrega = '';
+let mostrarDireccion = false;
+if (form.extras && Array.isArray(form.extras)) {
+  mostrarDireccion = form.extras.some(id => {
+    const extra = allExtras?.find(e => e.id === id);
+    return extra && (extra.name === 'Llevar vehículo a mi dirección' || extra.nombre === 'Llevar vehículo a mi dirección');
+  });
+  direccionEntrega = mostrarDireccion ? (form.datos?.direccion_entrega || '') : '';
+}
+// Mensaje para el cliente (siempre explicativo)
+const text_direccionentrega_block = mostrarDireccion && direccionEntrega
+  ? `Llevaremos el vehículo a la dirección que indicaste (<b>${direccionEntrega}</b>) el día <b>${appointment_date}</b> a las <b>${hora_entregadevehiculo}</b>. Si tienes alguna duda o necesitas modificar la dirección, contáctanos.`
+  : `Deberás retirar tu vehículo en nuestra agencia. Te esperamos en <b>Av. de los Lagos 7008, B1670 Rincón de Milberg</b> a la hora acordada.`;
+// Mensaje para el admin (solo dirección o sede)
+const text_direccionentrega_admin = mostrarDireccion && direccionEntrega
+  ? `<b>Dirección de entrega:</b> ${direccionEntrega}`
+  : `<b>Retiro en sede:</b> Av. de los Lagos 7008, B1670 Rincón de Milberg`;
   const tarjeta_credito_var = typeof tarjeta_credito !== 'undefined' ? tarjeta_credito : '';
   const customer_whatsapp_link = (() => {
     if (!form.datos?.telefono) return '';
@@ -126,6 +134,12 @@ export default async function handler(req, res) {
     } else {
       factura += '- Sin extras%0A';
     }
+    // Dirección personalizada si corresponde
+    if (mostrarDireccion && direccionEntrega) {
+      factura += `Dirección de entrega: ${direccionEntrega}%0A`;
+    } else {
+      factura += `Retiro en sede: Av. de los Lagos 7008, B1670 Rincón de Milberg%0A`;
+    }
     factura += `Total: ${appointment_amount} (por ${appointment_duration})%0A%0A`;
     factura += 'Deseo terminar mi proceso de reserva y me gustaría saber los métodos de pago disponibles.';
     return factura;
@@ -147,6 +161,7 @@ export default async function handler(req, res) {
     appointment_amount,
     text_direccionentrega,
     text_direccionentrega_block,
+    text_direccionentrega_admin,
     booking_id,
     tarjeta_credito: tarjeta_credito_var,
     customer_whatsapp_link,
@@ -155,11 +170,11 @@ export default async function handler(req, res) {
   };
 
   let mensaje_entrega_cliente = '';
-  if (mostrarDireccion && direccionEntrega) {
-    mensaje_entrega_cliente = `Llevaremos el vehículo a la dirección que indicaste (<b>${direccionEntrega}</b>) el día <b>${appointment_date}</b> a las <b>${hora_entregadevehiculo}</b>. Si tienes alguna duda o necesitas modificar la dirección, contáctanos.`;
-  } else {
-    mensaje_entrega_cliente = `Deberás retirar tu vehículo en nuestra agencia. Te esperamos en <a href="https://g.co/kgs/gj5UX3Z" style="color:#2563eb;text-decoration:none;font-weight:500" target="_blank">Av. de los Lagos 7008, B1670 Rincón de Milberg</a> a la hora acordada.`;
-  }
+if (mostrarDireccion && direccionEntrega) {
+  mensaje_entrega_cliente = `Llevaremos el vehículo a la dirección que indicaste (<b>${direccionEntrega}</b>) el día <b>${appointment_date}</b> a las <b>${hora_entregadevehiculo}</b>. Si tienes alguna duda o necesitas modificar la dirección, contáctanos.`;
+} else {
+  mensaje_entrega_cliente = `Deberás retirar tu vehículo en nuestra agencia. Te esperamos en <a href="https://g.co/kgs/gj5UX3Z" style="color:#2563eb;text-decoration:none;font-weight:500" target="_blank">Av. de los Lagos 7008, B1670 Rincón de Milberg</a> a la hora acordada.`;
+}
   vars.mensaje_entrega_cliente = mensaje_entrega_cliente;
 
   try {
