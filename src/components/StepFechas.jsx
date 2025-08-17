@@ -395,7 +395,6 @@ export default function StepFechas({ onNext }) {
                   dateFormat="dd/MM/yy"
                   placeholderText="DD/MM/AA"
                   todayButton="Hoy"
-                  withPortal
                   showMonthDropdown
                   showYearDropdown
                   dropdownMode="select"
@@ -436,7 +435,6 @@ export default function StepFechas({ onNext }) {
                   dateFormat="dd/MM/yy"
                   placeholderText="DD/MM/AA"
                   todayButton="Hoy"
-                  withPortal
                   showMonthDropdown
                   showYearDropdown
                   dropdownMode="select"

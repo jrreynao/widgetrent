@@ -17,6 +17,21 @@
   --wr-accent: #6b5cff; /* optional secondary accent (purple) */
 }
 
+/* Shadow DOM root resets (namespaced) */
+.wr-root, .wr-root * {
+  box-sizing: border-box;
+}
+.wr-root h1, .wr-root h2, .wr-root h3, .wr-root p, .wr-root ul, .wr-root li, .wr-root button, .wr-root input, .wr-root select, .wr-root textarea {
+  all: unset;
+  box-sizing: border-box;
+}
+.wr-root h1, .wr-root h2, .wr-root h3 { display:block; font-weight:800; margin:0; }
+.wr-root p { display:block; margin:0; }
+.wr-root ul { display:block; padding-left: 1.2em; }
+.wr-root li { display:list-item; }
+.wr-root button { display:inline-flex; cursor:pointer; }
+.wr-root input, .wr-root select, .wr-root textarea { background:#fff; color:#111; }
+
 /* Normalize base: no background, no forced centering/height */
 .step-fechas-bg,
 .step-vehiculo-form,
