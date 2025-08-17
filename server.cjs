@@ -2,15 +2,13 @@
 
 const express = require('express');
 const cors = require('cors');
-// Cargar módulos ESM desde CJS sin async/await usando esm
-let handler;
-try {
-  const esm = require('esm')(module);
-  const mod = esm('./send-reserva.js');
-  handler = (mod && (mod.default || mod.handler || mod));
-} catch (e) {
-  console.error('Error cargando send-reserva.js con esm:', e);
-  handler = (req, res) => res.status(500).json({ error: 'Handler no disponible' });
+// Cargar el handler ESM de forma perezosa con import() dentro del middleware
+let handlerPromise = null;
+async function getHandler() {
+  if (!handlerPromise) {
+    handlerPromise = import('./send-reserva.js').then((mod) => mod.default || mod.handler || mod);
+  }
+  return handlerPromise;
 }
 
 const app = express();
@@ -23,8 +21,18 @@ app.get('/', (req, res) => {
 });
 
 // Rutas API (ambas variantes para evitar conflictos con estáticos)
-app.post('/send-reserva', handler);
-app.post('/backend/send-reserva', handler);
+app.post('/send-reserva', async (req, res, next) => {
+  try {
+    const handler = await getHandler();
+    return handler(req, res, next);
+  } catch (e) { next(e); }
+});
+app.post('/backend/send-reserva', async (req, res, next) => {
+  try {
+    const handler = await getHandler();
+    return handler(req, res, next);
+  } catch (e) { next(e); }
+});
 
 // GET dry-run rápido
 app.get('/send-reserva', (req, res) => {
