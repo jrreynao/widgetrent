@@ -14,12 +14,13 @@
             <div style="color:#2563eb;font-size:1.12em;text-align:center;margin:18px 0 24px 0">
               Orden <span style="color:#101828">%booking_id%</span>
             </div>
-            <!-- Vehicle Card -->
-            <div style="background:#e6f0fa;border-radius:14px;margin:24px 0 12px 0;padding:18px 18px 12px 18px;display:flex;align-items:center;gap:18px">
-              <img src="%service_image%" alt="Foto del vehículo" style="width:110px;height:auto;border-radius:10px;object-fit:cover;background:#fff;border:1px solid #cbd5e1;">
+            <!-- Category Card -->
+            <div style="background:#e6f0fa;border-radius:14px;margin:24px 0 12px 0;padding:18px;display:flex;align-items:center;gap:18px">
+              <img src="%service_image%" alt="Imagen representativa" style="width:110px;height:auto;border-radius:10px;object-fit:cover;background:#fff;border:1px solid #cbd5e1;">
               <div style="flex:1">
-                <div style="font-size:1.18em;font-weight:700;color:#1e293b;margin-bottom:4px">%service_name%</div>
-                <div style="color:#475569;font-size:1.05em;margin-bottom:2px"><b>Extras:</b> %service_extras%</div>
+                <div style="font-size:1.18em;font-weight:700;color:#1e293b;margin-bottom:6px">Categoría seleccionada: %service_name%</div>
+                <div style="color:#475569;font-size:1.02em;margin-bottom:2px"><b>Rango de precios:</b> %category_range%</div>
+                <div style="color:#475569;font-size:1.02em;margin-bottom:2px"><b>Extras:</b> %service_extras%</div>
               </div>
             </div>
             <!-- Reserva Details -->
@@ -37,9 +38,9 @@
             </table>
             <!-- Extras List (si hay) -->
             %extras_list_block%
-            <!-- Amount -->
+            <!-- Amount (approx) -->
             <div style="font-size:1.18em;color:#2d3a4b;font-weight:700;margin:18px 0;text-align:center">
-              Total: %appointment_amount% <span style="font-size:0.95em;color:#444;font-weight:400">(por %appointment_duration%)</span>
+              Total aproximado: %appointment_amount% <span style="font-size:0.95em;color:#444;font-weight:400">(por %appointment_duration%)</span>
             </div>
             <!-- Client Info -->
             <table style="margin:18px 0;width:100%;border-radius:10px;background:#f8fafc">
@@ -58,14 +59,14 @@
             <!-- WhatsApp Button -->
             <div style="text-align:center;margin:24px 0">
               <a href="https://wa.me/%customer_whatsapp_link%" target="_blank" style="display:inline-block;padding:13px 32px;background:#2563eb;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;font-size:1em">
-                Contacta a tu cliente para finalizar la reserva y acordar métodos de pago y depósito
+                Contactar al cliente para cotizar y coordinar disponibilidad
               </a>
             </div>
             <!-- Confirmation Box -->
             <table style="background:#e6f7e6;border-radius:14px;margin:24px 0;width:100%">
               <tr>
                 <td style="padding:24px 18px;color:#333;text-align:center;font-size:1.08em;line-height:1.7">
-                  <b>La cita está esperando una confirmación, contacta con el cliente.</b><br><br>
+                  <b>Solicitud de cotización recibida — validar disponibilidad y confirmar precio.</b><br><br>
                   Gracias,<br>
                   IsraCar Rent
                 </td>

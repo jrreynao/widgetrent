@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import { extras as allExtras } from './src/data/extras.js';
+import { vehiculos as allVehiculos, categorias as allCategorias } from './src/data/vehiculos.js';
 import { fillTemplate } from './src/utils/loadEmailTemplate.js';
 
 export default async function handler(req, res) {
@@ -47,8 +48,19 @@ export default async function handler(req, res) {
   const customer_phone = form.datos?.telefono || '';
   const dni_number = form.datos?.dni || '';
   const customer_note = form.datos?.nota || '';
-  const service_name = form.vehiculo?.nombre || '';
-  const service_image = form.vehiculo?.imagen || form.vehiculo?.image || '';
+  // Categoría seleccionada y datos derivados (nombre amigable, imagen representativa y rango de precios)
+  const categoriaId = form.vehiculo?.categoria || form.vehiculo?.categoriaId || '';
+  const categoriaLabelMap = { '1': 'Vehículo Chico', '2': 'Vehículo Mediano', '3': 'Vehículo Grande' };
+  const categoriaNombre = categoriaLabelMap[categoriaId] || (allCategorias.find(c => c.id === categoriaId)?.nombre || 'Categoría no especificada');
+  const vehsCategoria = Array.isArray(allVehiculos) ? allVehiculos.filter(v => v.categoriaId === categoriaId) : [];
+  const minPrecio = vehsCategoria.length ? Math.min(...vehsCategoria.map(v => parseInt(v.precio) || 0)) : 0;
+  const maxPrecio = vehsCategoria.length ? Math.max(...vehsCategoria.map(v => parseInt(v.precio) || 0)) : 0;
+  const vehiculoRepresentativo = vehsCategoria.find(v => (parseInt(v.precio) || 0) === minPrecio) || vehsCategoria[0];
+  const service_name = categoriaNombre; // usar nombre de la categoría
+  const service_image = vehiculoRepresentativo?.imagen || vehiculoRepresentativo?.image || '';
+  const category_range = (minPrecio && maxPrecio)
+    ? `$${Number(minPrecio).toLocaleString('es-AR')} - $${Number(maxPrecio).toLocaleString('es-AR')} / día`
+    : '';
   const service_extras = (form.extras || []).map(id => {
     const extra = allExtras?.find(e => e.id === id);
     return extra ? (extra.name || extra.nombre || id) : id;
@@ -69,12 +81,10 @@ export default async function handler(req, res) {
     diasAlquiler = diff > 0 ? diff : 1;
   }
 
-  const appointment_duration = `${diasAlquiler} días`;
+  const appointment_duration = `${diasAlquiler} ${diasAlquiler === 1 ? 'día' : 'días'}`;
   const appointment_amount = (() => {
-    let totalVehiculo = 0;
-    if (form.vehiculo && form.vehiculo.precio) {
-      totalVehiculo = parseInt(form.vehiculo.precio) * diasAlquiler;
-    }
+    // Aproximado: precio mínimo de la categoría por cantidad de días + extras
+    let totalVehiculo = (minPrecio || 0) * diasAlquiler;
     let totalExtras = 0;
     if (form.extras && Array.isArray(form.extras)) {
       totalExtras = (form.extras || []).map(id => {
@@ -92,9 +102,12 @@ export default async function handler(req, res) {
   if (form.extras && Array.isArray(form.extras)) {
     mostrarDireccion = form.extras.some(id => {
       const extra = allExtras?.find(e => e.id === id);
-      return extra && (extra.name === 'Llevar vehículo a mi dirección' || extra.nombre === 'Llevar vehículo a mi dirección');
+      // Detectar por ID ("1") o por nombre, para mayor robustez
+      return !!extra && (extra.id === '1' || extra.name === 'Llevar vehículo a mi dirección' || extra.nombre === 'Llevar vehículo a mi dirección');
     });
-    direccionEntrega = mostrarDireccion ? (form.datos?.direccion_entrega || '') : '';
+    // Aceptar ambos nombres de campo desde el front: 'direccion' o 'direccion_entrega'
+    const dirFront = form.datos?.direccion || form.datos?.direccion_entrega || '';
+    direccionEntrega = mostrarDireccion ? String(dirFront).trim() : '';
   }
   // Definir text_direccionentrega para compatibilidad con plantillas antiguas
   const text_direccionentrega = mostrarDireccion && direccionEntrega
@@ -130,10 +143,10 @@ export default async function handler(req, res) {
   })();
 
   const whatsapp_factura = (() => {
-    let factura = '🧾 *Resumen de Reserva*%0A';
+    let factura = '🧾 *Solicitud de cotización*%0A';
     factura += `Orden: ${booking_id}%0A`;
     factura += `Nombre: ${customer_full_name}%0A`;
-    factura += `Vehículo: ${service_name}%0A`;
+    factura += `Categoría: ${service_name}%0A`;
     factura += `Fechas: ${appointment_date} a ${fechadev}%0A`;
     factura += 'Extras:%0A';
     if (form.extras && form.extras.length > 0) {
@@ -146,14 +159,33 @@ export default async function handler(req, res) {
     }
     // Dirección personalizada si corresponde
     if (mostrarDireccion && direccionEntrega) {
-      factura += `Dirección de entrega: ${direccionEntrega}%0A`;
+      factura += `Dirección de entrega: ${encodeURIComponent(direccionEntrega)}%0A`;
     } else {
       factura += `Retiro en sede: Av. de los Lagos 7008, B1670 Rincón de Milberg%0A`;
     }
-    factura += `Total: ${appointment_amount} (por ${appointment_duration})%0A%0A`;
-    factura += 'Deseo terminar mi proceso de reserva y me gustaría saber los métodos de pago disponibles.';
+    factura += `Total aproximado: ${appointment_amount} (por ${appointment_duration})%0A%0A`;
+    factura += 'Quisiera recibir la cotización final y conocer los métodos de pago disponibles.';
     return factura;
   })();
+
+  // Construir bloque de lista de extras para el correo del admin (si hay)
+  let extras_list_block = '';
+  if (form.extras && form.extras.length > 0) {
+    const items = (form.extras || []).map(id => {
+      const extra = allExtras?.find(e => e.id === id);
+      if (!extra) return '';
+      const price = parseInt(extra.price) || 0;
+      return `<tr><td style="padding:3px 0;border-bottom:1px dashed #e5e7eb;"><b>${extra.name}</b></td><td style="padding:3px 0;text-align:right;border-bottom:1px dashed #e5e7eb;">$${price.toLocaleString('es-AR')}</td></tr>`;
+    }).filter(Boolean).join('');
+    extras_list_block = `
+      <table style="width:100%;border:1px solid #e5e7eb;border-radius:10px;margin:0 0 16px 0;color:#334155;font-size:1em">
+        <tr>
+          <td colspan="2" style="padding:10px 12px;font-weight:700">Extras seleccionados</td>
+        </tr>
+        ${items}
+      </table>
+    `;
+  }
 
   const vars = {
     customer_full_name,
@@ -164,6 +196,7 @@ export default async function handler(req, res) {
     service_name,
     service_image,
     service_extras,
+  category_range,
     appointment_date,
     fechadev,
     hora_entregadevehiculo,
@@ -176,7 +209,7 @@ export default async function handler(req, res) {
     booking_id,
     tarjeta_credito: tarjeta_credito_var,
     customer_whatsapp_link,
-    extras_list_block: typeof extras_list_block !== 'undefined' ? extras_list_block : '',
+  extras_list_block,
     whatsapp_factura
   };
 
@@ -192,13 +225,13 @@ export default async function handler(req, res) {
     const userResult = await transporter.sendMail({
       from: 'IsraCar Rent <admin@isracarent.com>',
       to: vars.customer_email,
-      subject: '¡Tu reserva en IsraCar Rent! Finaliza y paga tu alquiler',
+      subject: '¡Recibimos tu solicitud de cotización en IsraCar Rent! 🎉',
       html: fillTemplate(htmlCliente, vars)
     });
     const adminResult = await transporter.sendMail({
       from: 'IsraCar Rent <admin@isracarent.com>',
       to: 'admin@isracarent.com',
-      subject: `Nueva solicitud de reserva de ${vars.customer_full_name}`,
+      subject: `Nueva solicitud de cotización de ${vars.customer_full_name}`,
       html: fillTemplate(htmlAdmin, vars)
     });
     if (userResult.accepted.length && adminResult.accepted.length) {

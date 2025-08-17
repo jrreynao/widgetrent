@@ -13,14 +13,15 @@
             <h1 style="color:#2d3a4b;font-size:1.6em;margin:28px 0 0 0;font-weight:900;text-align:center;letter-spacing:0.5px">Hola %customer_full_name%,</h1>
             <!-- Content -->
             <div style="margin:28px 0 18px 0;color:#4a5568;font-size:1.12em;line-height:1.7;text-align:center">
-              ¡Gracias por elegirnos para tu próxima aventura! Estamos muy emocionados de acompañarte en este viaje. Solo falta un paso para que puedas disfrutar de tu vehículo alquilado.<br><br>
-              Para finalizar tu reserva y realizar el pago de manera rápida y segura, haz clic en el siguiente botón y uno de nuestros asesores te ayudará personalmente por WhatsApp:
+              ¡Gracias por tu solicitud de cotización! Seleccionaste una categoría de vehículo y ahora nuestro equipo confirmará la disponibilidad y te enviará el precio final según los autos disponibles para esas fechas.<br><br>
+              Mientras tanto, aquí tienes el resumen de tu solicitud:
             </div>
-            <!-- Vehicle Card -->
-            <div style="background:#e6f0fa;border-radius:14px;margin:24px 0 12px 0;padding:18px 18px 12px 18px;display:flex;align-items:center;gap:18px">
-              <img src="%service_image%" alt="Foto del vehículo" style="width:100px;height:auto;border-radius:10px;object-fit:cover;background:#fff;border:1px solid #cbd5e1;">
+            <!-- Category Card -->
+            <div style="background:#e6f0fa;border-radius:14px;margin:24px 0 12px 0;padding:18px;display:flex;align-items:center;gap:18px">
+              <img src="%service_image%" alt="Imagen representativa" style="width:100px;height:auto;border-radius:10px;object-fit:cover;background:#fff;border:1px solid #cbd5e1;">
               <div style="flex:1">
-                <div style="font-size:1.13em;font-weight:700;color:#1e293b;margin-bottom:4px">%service_name%</div>
+                <div style="font-size:1.13em;font-weight:700;color:#1e293b;margin-bottom:6px">Categoría seleccionada: %service_name%</div>
+                <div style="color:#475569;font-size:1.02em;margin-bottom:2px"><b>Rango de precios de referencia:</b> %category_range%</div>
                 <div style="color:#475569;font-size:1.02em;margin-bottom:2px"><b>Extras:</b> %service_extras%</div>
               </div>
             </div>
@@ -39,19 +40,18 @@
                   <div style="margin:12px 0 8px 0;text-align:center;font-size:1.05em">
                     <b>Extras seleccionados:</b> %service_extras%
                   </div>
-                  <!-- Total de la reserva -->
+                  <!-- Total aproximado -->
                   <div style="margin:8px 0 18px 0;text-align:center;font-size:1.12em;font-weight:700;color:#ff6600">
-                    Total de la reserva: %appointment_amount% <span style="font-size:0.95em;color:#444;font-weight:400">(por %appointment_duration%)</span>
+                    Total aproximado: %appointment_amount% <span style="font-size:0.95em;color:#444;font-weight:400">(por %appointment_duration%)</span>
                   </div>
-                  <a href="https://wa.me/5491165920909?text=%whatsapp_factura%" style="display:inline-block;margin-top:18px;padding:13px 32px;background:#2563eb;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;font-size:1em" target="_blank">Finalizar reserva con un asesor</a>
+                  <a href="https://wa.me/5491165920909?text=%whatsapp_factura%" style="display:inline-block;margin-top:18px;padding:13px 32px;background:#2563eb;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;font-size:1em" target="_blank">Hablar con un asesor</a>
                 </td>
               </tr>
             </table>
             <div style="margin:28px 0 18px 0;color:#4a5568;font-size:1.08em;line-height:1.7;text-align:center">
               <!-- Mensaje condicional según delivery -->
-              %text_direccionentrega_block%
-              ¿Tienes dudas? ¡Estamos para ayudarte! Escríbenos por WhatsApp y haremos que tu experiencia sea simple y agradable.<br><br>
-              ¡Esperamos verte pronto al volante!
+              %text_direccionentrega_block%<br><br>
+              Te contactaremos a la brevedad para confirmarte la disponibilidad y el valor final.
             </div>
             </div>
             <div style="text-align:center;margin-top:24px">

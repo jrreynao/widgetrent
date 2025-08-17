@@ -23,7 +23,6 @@ const categoriaVisual = [
 ];
 import React, { useState } from "react";
 
-import "./StepConfirmar.css";
 import { FaCar, FaUser, FaRegCalendar, FaMoneyBillWave, FaPlus, FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 const StepConfirmar = ({ form, vehiculos, extras, onBack, onSubmit }) => {
@@ -44,28 +43,38 @@ const StepConfirmar = ({ form, vehiculos, extras, onBack, onSubmit }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Helpers: get extra price and format currency
+  const getExtraPrice = (extra) => {
+    const p = (extra && (extra.price ?? extra.precio)) ?? 0;
+    const n = typeof p === 'string' ? parseInt(p) : (p || 0);
+    return Number.isFinite(n) ? n : 0;
+  };
+  const formatCurrency = (n) => `$${Number(n || 0).toLocaleString()}`;
+
   // Componente móvil/tablet
   const ConfirmarMobile = () => (
   <div ref={widgetRef} className="step-confirmar-mobile" style={{background:'#f5f6f8', minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column'}}>
   <div className="confirmar-card-mobile" style={{width:'100%', margin:'1.2rem 0', boxSizing:'border-box', background:'#fff', borderRadius:'16px', boxShadow:'0 4px 16px 0 rgba(60,60,60,0.10)', padding:'1.1rem 0.7rem', display:'flex', flexDirection:'column', gap:'0.7rem'}}>
   <h1 style={{fontSize:'1.2rem', fontWeight:800, textAlign:'center', color:'#222', marginBottom:'0.2rem'}}>¡Revisá y confirmá tu reserva!</h1>
   <p style={{textAlign:'center', color:'#6b7280', margin:'0.2rem 0 0.7rem', fontSize:'1rem'}}>Revisá los detalles de tu alquiler antes de enviar la cotización.</p>
-        <div style={{background:'#f9fafb', borderRadius:'1rem', padding:'0.7rem 0.9rem', marginBottom:'0.4rem', boxShadow:'0 2px 8px 0 rgba(60,60,60,0.04)', display:'flex', flexDirection:'column', gap:'0.2rem'}}>
-          <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'0.2rem'}}>
-            <div>
+        <div style={{background:'#f9fafb', borderRadius:'1rem', padding:'0.9rem 0.9rem', marginBottom:'0.4rem', boxShadow:'0 2px 8px 0 rgba(60,60,60,0.04)', display:'flex', flexDirection:'column', gap:'0.2rem'}}>
+          <div style={{display:'flex', alignItems:'center', justifyContent:'center', gap:'1.2rem', marginBottom:'0.2rem'}}>
+            <div style={{textAlign:'center', minWidth:'120px'}}>
               <span style={{fontSize:'0.97rem', color:'#6b7280'}}>Retiro</span>
               <div style={{fontWeight:600, color:'#222', fontSize:'1.08rem', margin:'0.1rem 0'}}>{form.fechas?.fechaRetiro || '--'}</div>
               <span style={{fontSize:'0.97rem', color:'#6b7280'}}>{form.fechas?.horaRetiro ? `${form.fechas.horaRetiro} hs` : ''}</span>
             </div>
-            <div style={{width:'1.5px', height:'40px', background:'#e5e7eb', borderRadius:'2px', margin:'0 0.7rem'}}></div>
-            <div>
+            <div style={{display:'flex', alignItems:'center', justifyContent:'center', color:'#6b7280'}}>
+              <FaArrowRight style={{fontSize:'1.6rem', color:'#6b7280'}} />
+            </div>
+            <div style={{textAlign:'center', minWidth:'120px'}}>
               <span style={{fontSize:'0.97rem', color:'#6b7280'}}>Devolución</span>
               <div style={{fontWeight:600, color:'#222', fontSize:'1.08rem', margin:'0.1rem 0'}}>{form.fechas?.fechaDevolucion || '--'}</div>
               <span style={{fontSize:'0.97rem', color:'#6b7280'}}>{form.fechas?.horaDevolucion ? `${form.fechas.horaDevolucion} hs` : ''}</span>
             </div>
           </div>
         </div>
-        <div style={{background:'#fefce8', borderRadius:'1rem', padding:'1rem 1.2rem', marginBottom:'0.5rem', textAlign:'center', boxShadow:'0 2px 8px 0 rgba(60,60,60,0.04)'}}>
+  <div style={{background:'#fefce8', borderRadius:'1rem', padding:'1rem 1.2rem', marginBottom:'0.5rem', textAlign:'center', boxShadow:'0 2px 8px 0 rgba(60,60,60,0.04)'}}>
           <p style={{fontSize:'1rem', color:'#854d0e', marginBottom:'0.2rem'}}>Total aproximado</p>
           {(() => {
             // Calcular el total aproximado usando el vehículo más económico de la categoría
@@ -85,10 +94,10 @@ const StepConfirmar = ({ form, vehiculos, extras, onBack, onSubmit }) => {
               precioExtras = form.extras.reduce((acc, e) => acc + (e.precio ? parseInt(e.precio) : 0), 0);
             }
             const totalAprox = (precioVehiculo * diasAlquilerMostrar) + precioExtras;
-            return <p style={{fontSize:'1.5rem', fontWeight:800, color:'#854d0e', margin:'0.1rem 0'}}>${totalAprox.toLocaleString()}</p>;
+            return <div className="confirmar-total-amount" style={{fontWeight:800, color:'#854d0e', margin:'0.1rem 0', fontSize:'2.4rem'}}>${totalAprox.toLocaleString()}</div>;
           })()}
           <p style={{fontSize:'1rem', color:'#b45309'}}>por {diasAlquilerMostrar} día{diasAlquilerMostrar>1?'s':''}</p>
-          <p style={{fontSize:'0.98rem', color:'#b45309', marginTop:'0.3rem'}}>El precio es un aproximado según el vehículo disponible en nuestra agencia para reservar en esa categoría.</p>
+          <div className="confirmar-total-note" style={{color:'#b45309', marginTop:'0.3rem', fontSize:'0.85rem'}}>El precio es un aproximado según el vehículo disponible en nuestra agencia para reservar en esa categoría.</div>
         </div>
         {/* Acordeones */}
   <div style={{display:'flex', flexDirection:'column', gap:'0.5rem', marginBottom:'0.5rem'}}>
@@ -139,35 +148,57 @@ const StepConfirmar = ({ form, vehiculos, extras, onBack, onSubmit }) => {
               <div style={{padding:'0.5rem 1rem 0.7rem 1rem', borderTop:'1px solid #e5e7eb', color:'#444', fontSize:'1rem'}}>
                 <p><span style={{fontWeight:600}}>Nombre:</span> {form.datos?.nombre || '--'}</p>
                 <p><span style={{fontWeight:600}}>Email:</span> {form.datos?.email || '--'}</p>
-                <p><span style={{fontWeight:600}}>Teléfono:</span> {telefonoCompleto || '--'}</p>
+                <p><span style={{fontWeight:600}}>Teléfono:</span> {telefonoSolo || '--'}</p>
               </div>
             )}
           </div>
-          {/* Extras */}
-          <div style={{background:'#fff', border:'1px solid #e5e7eb', borderRadius:'1rem', boxShadow:'0 2px 8px 0 rgba(60,60,60,0.04)'}}>
-            <button type="button" onClick={()=>setShowExtras(v=>!v)} style={{width:'100%', background:'none', border:'none', padding:'0.7rem 0.2rem', display:'flex', alignItems:'center', justifyContent:'space-between', cursor:'pointer'}}>
-              <span style={{display:'flex', alignItems:'center', color:'#6366f1', fontWeight:600}}><FaPlus style={{marginRight:'0.7em'}} /> Extras</span>
-              <span style={{color:'#6366f1', fontSize:'1.5em', transition:'transform 0.3s', transform: showExtras ? 'rotate(180deg)' : 'none'}}>&#9660;</span>
-            </button>
-            {showExtras && (
-              <div style={{padding:'0.5rem 1rem 0.7rem 1rem', borderTop:'1px solid #e5e7eb', color:'#444', fontSize:'1rem'}}>
-                <ul style={{listStyle:'disc', paddingLeft:'1.2em', margin:0}}>
-                  {extrasSeleccionados.length === 0 ? <li>Sin extras</li> : extrasSeleccionados.map(e => (
-                    <li key={e.id}>{e.name}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
+          {/* Extras: mostrar solo si hay seleccionados */}
+          {extrasSeleccionados.length > 0 && (
+            <div style={{background:'#fff', border:'1px solid #e5e7eb', borderRadius:'1rem', boxShadow:'0 2px 8px 0 rgba(60,60,60,0.04)'}}>
+              <button type="button" onClick={()=>setShowExtras(v=>!v)} style={{width:'100%', background:'none', border:'none', padding:'0.7rem 0.2rem', display:'flex', alignItems:'center', justifyContent:'space-between', cursor:'pointer'}}>
+                <span style={{display:'flex', alignItems:'center', color:'#6366f1', fontWeight:600}}><FaPlus style={{marginRight:'0.7em'}} /> Extras</span>
+                <span style={{color:'#6366f1', fontSize:'1.5em', transition:'transform 0.3s', transform: showExtras ? 'rotate(180deg)' : 'none'}}>&#9660;</span>
+              </button>
+              {showExtras && (
+                <div style={{padding:'0.5rem 1rem 0.7rem 1rem', borderTop:'1px solid #e5e7eb', color:'#444', fontSize:'1rem'}}>
+                  <ul style={{listStyle:'disc', paddingLeft:'1.2em', margin:0}}>
+                    {extrasSeleccionados.map(e => (
+                      <li key={e.id} style={{display:'flex', justifyContent:'space-between', gap:'0.5rem'}}>
+                          <span style={{display:'inline-block'}}>{e.name}</span>
+                          <span style={{fontWeight:600, whiteSpace:'nowrap'}}>{formatCurrency(getExtraPrice(e))}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
         </div>
-        <div style={{display:'flex', flexDirection:'column', gap:'0.7rem', marginTop:'0.7rem'}}>
-          <button type="button" style={{width:'100%', background:'#6366f1', color:'#fff', fontWeight:600, fontSize:'1.1rem', border:'none', borderRadius:'12px', padding:'0.9rem 0', boxShadow:'0 2px 8px rgba(99,102,241,0.08)', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center'}} onClick={e => { e.preventDefault(); enviarReserva(); }} disabled={enviando}>
-            Enviar cotización <span style={{fontSize:'1.3em', marginLeft:'0.7em'}}>&#10148;</span>
-          </button>
-          <button type="button" style={{width:'100%', background:'#fff', color:'#374151', fontWeight:600, fontSize:'1.1rem', border:'1px solid #d1d5db', borderRadius:'12px', padding:'0.9rem 0', boxShadow:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center'}} onClick={onBack}>
-            <span style={{fontSize:'1.3em', marginRight:'0.7em'}}>&#8592;</span> Atrás
+        {/* Botonera estandarizada como en Datos (móvil) */}
+        <div className="confirmar-btns-mobile" style={{display:'flex', justifyContent:'flex-end', marginTop:'0.7rem', gap:'0.5rem'}}>
+          <button type="button" className="wr-btn wr-btn--secondary" onClick={onBack}>← Atrás</button>
+          <button type="button" className="wr-btn wr-btn--primary" onClick={e => { e.preventDefault(); enviarReserva(); }} disabled={enviando}>
+            Enviar cotización <FaMoneyBillWave style={{ marginLeft: '0.5em' }} />
           </button>
         </div>
+        <style>{`
+          /* Mobile compact + total overrides inlined to avoid external CSS conflicts */
+          @media (max-width: 650px) {
+            .confirmar-card-mobile { padding: 0.7rem !important; }
+            .step-confirmar-mobile h1 { font-size: 1.05rem !important; }
+            .step-confirmar-mobile p:not(.confirmar-total-amount):not(.confirmar-total-note) { font-size: 0.95rem !important; }
+            .step-confirmar-mobile button { padding: 0.7rem 0.9rem !important; font-size: 0.98rem !important; }
+            /* Force bigger amount on mobile */
+            .step-confirmar-mobile .confirmar-total-amount { font-size: 2.4rem !important; line-height: 1.1 !important; }
+            /* Make the note smaller on mobile */
+            .step-confirmar-mobile .confirmar-total-note { font-size: 0.85rem !important; }
+          }
+          /* Botonera móvil: simétrica y ocupando el ancho como en StepDatos */
+          @media (max-width: 768px) {
+            .confirmar-btns-mobile { flex-direction: row !important; gap: 0.7rem !important; align-items: center !important; justify-content: flex-end !important; width: 100% !important; }
+            .confirmar-btns-mobile .wr-btn { flex: 1 1 0 !important; width: auto !important; }
+          }
+        `}</style>
       </div>
     </div>
   );
@@ -198,8 +229,8 @@ const StepConfirmar = ({ form, vehiculos, extras, onBack, onSubmit }) => {
   // Buscar extras seleccionados
   const extrasSeleccionados = extras.filter(e => form.extras.includes(e.id));
 
-  // Mostrar código país limpio
-  const telefonoCompleto = `${form.datos?.codigoPais || ''} ${form.datos?.telefono || ''}`.trim();
+  // Teléfono para mostrar (solo número en UI móvil)
+  const telefonoSolo = `${form.datos?.telefono || ''}`.trim();
 
   // Calcular total
   const totalExtras = extrasSeleccionados.reduce((sum, e) => sum + (parseInt(e.price) || 0), 0);
@@ -287,7 +318,23 @@ const StepConfirmar = ({ form, vehiculos, extras, onBack, onSubmit }) => {
               </div>
             </div>
             <div className="confirmar-main-right" style={{display:'flex', flexDirection:'column', gap:'2rem'}}>
-              <div style={{background:'#fefce8', color:'#854d0e', borderRadius:'1rem', padding:'1.5rem', textAlign:'center', display:'flex', flexDirection:'column', justifyContent:'center', border:'none'}}>
+              {isDesktop && extrasSeleccionados.length > 0 && (
+                <div className="confirmar-extras-block" style={{border:'1px solid #e5e7eb', borderRadius:'1rem', padding:'1.2rem'}}>
+                  <div style={{display:'flex', alignItems:'center', marginBottom:'1rem'}}>
+                    <FaPlus style={{color:'#4f46e5', marginRight:'0.7em', fontSize:'1.3em'}} />
+                    <h2 style={{fontSize:'1.15rem', fontWeight:600, color:'#111827'}}>Extras</h2>
+                  </div>
+                  <ul style={{paddingLeft:'1.2em', margin:0, color:'#6b7280', fontSize:'1rem'}}>
+                    {extrasSeleccionados.map(e => (
+                      <li key={e.id} style={{display:'flex', justifyContent:'space-between', gap:'0.75rem'}}>
+                        <span style={{display:'inline-block'}}>{e.name}</span>
+                        <span style={{fontWeight:600, color:'#111827', whiteSpace:'nowrap'}}>{formatCurrency(getExtraPrice(e))}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              <div className="confirmar-total-block" style={{background:'#fefce8', color:'#854d0e', borderRadius:'1rem', padding:'1.5rem', textAlign:'center', display:'flex', flexDirection:'column', justifyContent:'center', border:'none'}}>
                     <p style={{fontSize:'1.15rem', fontWeight:600}}>Total aproximado</p>
                     {(() => {
                       // Calcular el total aproximado usando el vehículo más económico de la categoría
@@ -307,38 +354,47 @@ const StepConfirmar = ({ form, vehiculos, extras, onBack, onSubmit }) => {
                         precioExtras = form.extras.reduce((acc, e) => acc + (e.precio ? parseInt(e.precio) : 0), 0);
                       }
                       const totalAprox = (precioVehiculo * diasAlquilerMostrar) + precioExtras;
-                      return <p style={{fontSize:'2.2rem', fontWeight:800}}>${totalAprox.toLocaleString()}</p>;
+                      return <p className="confirmar-total-amount" style={{fontWeight:800}}>${totalAprox.toLocaleString()}</p>;
                     })()}
                     <p style={{fontSize:'1.1rem', color:'#b45309'}}>por {diasAlquilerMostrar} día{diasAlquilerMostrar>1?'s':''}</p>
-                    <p style={{fontSize:'1rem', color:'#b45309', marginTop:'0.3rem'}}>El precio es un aproximado según el vehículo disponible en nuestra agencia para reservar en esa categoría.</p>
+                    <p className="confirmar-total-note" style={{color:'#b45309', marginTop:'0.3rem'}}>El precio es un aproximado según el vehículo disponible en nuestra agencia para reservar en esa categoría.</p>
               </div>
-              {isDesktop && (
-                <div style={{border:'1px solid #e5e7eb', borderRadius:'1rem', padding:'1.2rem'}}>
-                  <div style={{display:'flex', alignItems:'center', marginBottom:'1rem'}}>
-                    <FaPlus style={{color:'#4f46e5', marginRight:'0.7em', fontSize:'1.3em'}} />
-                    <h2 style={{fontSize:'1.15rem', fontWeight:600, color:'#111827'}}>Extras</h2>
-                  </div>
-                  <ul style={{paddingLeft:'1.2em', margin:0, color:'#6b7280', fontSize:'1rem'}}>
-                    {extrasSeleccionados.length === 0 ? <li>Sin extras</li> : extrasSeleccionados.map(e => (
-                      <li key={e.id}>{e.name}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
             </div>
           </div>
+          {/* Botonera estandarizada como en Datos (desktop) */}
           <div className="confirmar-btns" style={{display:'flex', flexDirection:'row', justifyContent:'space-between', alignItems:'center', marginTop:'2rem', width:'100%', gap:'1rem'}}>
-            <button type="button" className="back-btn-confirmar" style={{background:'#fff', color:'#374151', border:'1px solid #d1d5db', borderRadius:'0.75rem', padding:'0.9rem 2.2rem', fontSize:'1.1rem', fontWeight:700, boxShadow:'none', cursor:'pointer', display:'flex', alignItems:'center', gap:'0.7em'}} onClick={onBack}>&larr; Atrás</button>
-            <button type="button" className="next-btn-confirmar" style={{background:'#4f46e5', color:'#fff', border:'none', borderRadius:'0.75rem', padding:'0.9rem 2.2rem', fontSize:'1.1rem', fontWeight:700, boxShadow:'0 4px 16px 0 rgba(60,60,60,0.10)', cursor:'pointer', display:'flex', alignItems:'center', gap:'0.7em'}} onClick={e => { e.preventDefault(); enviarReserva(); }} disabled={enviando}>Enviar cotización <FaMoneyBillWave style={{fontSize:'1.3em', marginLeft:'0.5em'}} /></button>
+            <button type="button" className="wr-btn wr-btn--secondary" onClick={onBack}>← Atrás</button>
+            <button type="button" className="wr-btn wr-btn--primary" onClick={e => { e.preventDefault(); enviarReserva(); }} disabled={enviando}>Enviar cotización <FaMoneyBillWave style={{marginLeft:'0.5em'}} /></button>
           </div>
         </div>
         <style>{`
+          /* Default sizes for amount and note (desktop/tablet) */
+          .confirmar-total-note { font-size: 0.9rem; }
+          .confirmar-total-amount { font-size: 2.2rem; }
           @media (min-width: 901px) {
             .confirmar-card {
               max-width: 1100px !important;
               padding: 2.5rem 1.5rem !important;
               border-radius: 20px !important;
             }
+            /* Better reading rhythm on desktop */
+            .step-confirmar p { line-height: 1.5 !important; }
+            .confirmar-main-grid { gap: 2.4rem !important; }
+            .confirmar-details-grid { gap: 1.6rem !important; }
+            .confirmar-fechas-block { padding: 1.4rem !important; }
+            .confirmar-details-grid > div { padding: 1.4rem !important; }
+            .confirmar-main-right .confirmar-extras-block { padding: 1.4rem !important; }
+            .confirmar-main-right .confirmar-total-block { padding: 1.6rem !important; }
+            /* Right column: make it horizontal on desktop, Extras left and Total right */
+            /* Right column: make it horizontal on desktop, Extras left and Total right */
+            .confirmar-main-right { flex-direction: row !important; gap: 1.5rem !important; align-items: stretch !important; }
+            .confirmar-main-right .confirmar-extras-block, .confirmar-main-right .confirmar-total-block { flex: 1 1 0 !important; }
+            .confirmar-main-right .confirmar-extras-block { order: 1 !important; }
+            .confirmar-main-right .confirmar-total-block { order: 2 !important; }
+            /* Extras list: no bullets, clearer separation */
+            .confirmar-extras-block ul { list-style: none !important; padding-left: 0 !important; margin: 0 !important; }
+            .confirmar-extras-block li { display: flex !important; justify-content: space-between !important; gap: 0.75rem !important; padding: 0.45rem 0 !important; border-bottom: 1px dashed #e5e7eb !important; }
+            .confirmar-extras-block li:last-child { border-bottom: none !important; }
             .confirmar-fechas-row {
               flex-direction: row !important;
               gap: 2rem !important;
@@ -366,17 +422,11 @@ const StepConfirmar = ({ form, vehiculos, extras, onBack, onSubmit }) => {
             }
             .confirmar-btns {
               flex-direction: row !important;
-              gap: 0 !important;
+              gap: 1rem !important;
               width: 100% !important;
-              justify-content: space-between !important;
+              justify-content: flex-end !important;
             }
-            .next-btn-confirmar {
-              width: auto !important;
-              margin-bottom: 0 !important;
-            }
-            .back-btn-confirmar {
-              width: auto !important;
-            }
+            .confirmar-btns .wr-btn { flex: 0 0 auto !important; }
           }
           @media (max-width: 900px) {
             .confirmar-card {
@@ -384,6 +434,7 @@ const StepConfirmar = ({ form, vehiculos, extras, onBack, onSubmit }) => {
               padding: 1.2rem 0.3rem !important;
               border-radius: 20px !important;
             }
+            .confirmar-main-right { flex-direction: column !important; gap: 1rem !important; }
             .confirmar-fechas-row {
               flex-direction: column !important;
               gap: 0.7rem !important;
@@ -401,18 +452,8 @@ const StepConfirmar = ({ form, vehiculos, extras, onBack, onSubmit }) => {
               width: 100% !important;
               margin-bottom: 0.7rem !important;
             }
-            .confirmar-btns {
-              flex-direction: column !important;
-              gap: 0.7rem !important;
-              width: 100% !important;
-            }
-            .next-btn-confirmar {
-              width: 100% !important;
-              margin-bottom: 0.7rem !important;
-            }
-            .back-btn-confirmar {
-              width: 100% !important;
-            }
+            .confirmar-btns { flex-direction: row !important; gap: 0.7rem !important; width: 100% !important; justify-content: flex-end !important; }
+            .confirmar-btns .wr-btn { flex: 1 1 0 !important; }
           }
         `}</style>
       </div>

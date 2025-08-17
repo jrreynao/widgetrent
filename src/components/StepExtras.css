@@ -1,0 +1,8 @@
+/* Compact mobile sizing for extras cards */
+@media (max-width: 650px) {
+	.extras-list-responsive label[for^='extra-'] { padding: 0.6rem 0.6rem !important; min-height: 64px !important; }
+	.extras-list-responsive span[style*='width: 60px'] { width: 44px !important; height: 44px !important; }
+	.extras-list-responsive span[style*='font-size: 1.15rem'] { font-size: 1rem !important; }
+	.extras-list-responsive span[style*='font-size: 0.98rem'] { font-size: 0.9rem !important; }
+	.extras-list-responsive span[style*='font-size: 1.1rem'] { font-size: 1rem !important; }
+}

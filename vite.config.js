@@ -5,8 +5,13 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
+      '/api': {
+        target: 'https://isracarent.com',
+        changeOrigin: true,
+        secure: true
+      },
       '/backend': {
-        target: 'https://widgetrent.onrender.com',
+        target: 'https://isracarent.com',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/backend/, '/api')
       }

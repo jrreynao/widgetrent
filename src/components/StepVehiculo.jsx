@@ -86,7 +86,7 @@ const StepVehiculo = ({ onNext, onBack, selected, setSelected }) => {
         <div className="vehiculo-categorias-grid" style={{width:'100%', marginBottom:'2.5rem', display:'flex', gap:'1.2rem', flexDirection:'column'}}>
           {categoriaVisual.map(cat => {
             const rango = getRangoPrecios(cat.id);
-            const selectedStyle = cat.id === categoria ? {border:'2.5px solid #4f46e5', boxShadow:'0 4px 24px rgba(79,70,229,0.08)', background:'#f6f7ff'} : {border:'1.5px solid #e5e7eb', background:'#fff'};
+            const selectedStyle = cat.id === categoria ? {border:'2.5px solid var(--wr-brand)', boxShadow:'0 4px 24px rgba(46,204,113,0.12)', background:'rgba(46,204,113,0.06)'} : {border:'1.5px solid #e5e7eb', background:'#fff'};
             return (
               <button key={cat.id} type="button" className="vehiculo-categoria-card"
                 style={{
@@ -104,7 +104,7 @@ const StepVehiculo = ({ onNext, onBack, selected, setSelected }) => {
                 }}
                 onClick={()=>handleCategoria(cat.id)}>
                 <span style={{marginRight:'1.1rem', display:'flex', alignItems:'center', justifyContent:'center', width:'60px', height:'60px', background:'#f8f8f8', borderRadius:'12px', flexShrink:0}}>
-                  {cat.icon && React.createElement(cat.icon, {size: 38, color: '#4f46e5'})}
+                  {cat.icon && React.createElement(cat.icon, {size: 38, color: 'var(--wr-brand)'})}
                 </span>
                 <div style={{flex:'1 1 0', textAlign:'left'}}>
                   <div style={{fontSize:'1.15rem', fontWeight:700, color:'#222', marginBottom:'0.2rem'}}>{cat.nombre}</div>
@@ -130,10 +130,25 @@ const StepVehiculo = ({ onNext, onBack, selected, setSelected }) => {
             }
           }
         `}</style>
-        <div style={{display:'flex', justifyContent:'flex-end', marginTop:'1.5rem'}}>
-          <button type="button" onClick={onBack} style={{background:'#eee', color:'#333', border:'none', borderRadius:'12px', padding:'0.9rem 2.2rem', fontSize:'1.1rem', fontWeight:700, marginRight:'1rem', boxShadow:'0 2px 8px rgba(255,102,0,0.08)', cursor:'pointer'}}>Atrás</button>
-          <button type="button" onClick={()=>onNext({ categoria, rango: getRangoPrecios(categoria) })} style={{background:'#4f46e5', color:'#fff', border:'none', borderRadius:'12px', padding:'0.9rem 2.2rem', fontSize:'1.1rem', fontWeight:700, boxShadow:'0 4px 16px 0 rgba(60,60,60,0.10)', cursor: categoria ? 'pointer' : 'not-allowed', opacity: categoria ? 1 : 0.6}} disabled={!categoria}>Continuar &rarr;</button>
+        {/* Botonera estandarizada como en Datos */}
+        <div className="vehiculo-btns" style={{display:'flex', justifyContent:'flex-end', marginTop:'1.5rem', gap:'1rem'}}>
+          <button type="button" onClick={onBack} className="wr-btn wr-btn--secondary">← Atrás</button>
+          <button type="button" onClick={()=>onNext({ categoria, rango: getRangoPrecios(categoria) })} className="wr-btn wr-btn--primary" style={{opacity: categoria ? 1 : 0.6, cursor: categoria ? 'pointer' : 'not-allowed'}} disabled={!categoria}>Continuar →</button>
         </div>
+        <style>{`
+          @media (max-width: 480px) {
+            .vehiculo-btns { flex-direction: row !important; gap: 0.5rem !important; margin-top: 0.4rem !important; align-items: center !important; justify-content: flex-end !important; flex-wrap: nowrap !important; }
+            .vehiculo-btns .wr-btn { flex: 0 0 auto !important; width: auto !important; padding: 0.7rem 0.8rem !important; font-size: 1.02rem !important; }
+          }
+          @media (max-width: 768px) {
+            .vehiculo-btns { flex-direction: row !important; gap: 0.7rem !important; margin-top: 0.6rem !important; align-items: center !important; }
+            .vehiculo-btns .wr-btn { flex: 1 1 0 !important; }
+          }
+          @media (min-width: 769px) {
+            .vehiculo-btns { justify-content: flex-end !important; gap: 1rem !important; }
+            .vehiculo-btns .wr-btn { flex: 0 0 auto !important; }
+          }
+        `}</style>
       </div>
     </div>
   );

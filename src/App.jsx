@@ -125,8 +125,8 @@ function App() {
       // No reemplazar %tarjeta_credito% en el admin, lo hace el backend
       const htmlAdmin = replaceVars(plantillaAdmin, vars, ["tarjeta_credito"]);
 
-      // Endpoint robusto: intenta /backend, cae a /api si no está mapeado
-      const bases = ["/backend", "/api"];
+  // Endpoint: usa VITE_API_BASE si está definido; si no, intenta /api y luego /backend
+  const bases = [import.meta.env?.VITE_API_BASE, "/api", "/backend"].filter(Boolean);
       let res;
       let lastErr;
       for (const base of bases) {

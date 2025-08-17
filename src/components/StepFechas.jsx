@@ -46,6 +46,18 @@ const sucursales = ["Buenos Aires"];
 export default function StepFechas({ onNext }) {
   // Ref para el widget
   const widgetRef = React.useRef(null);
+  // Refs para abrir el time picker al hacer click en todo el campo
+  const startTimeRef = React.useRef(null);
+  const endTimeRef = React.useRef(null);
+
+  const openTimePicker = (ref) => {
+    const el = ref?.current;
+    if (!el || el.disabled) return;
+    if (typeof el.showPicker === 'function') {
+      try { el.showPicker(); return; } catch (_) { /* fallback below */ }
+    }
+    el.focus();
+  };
 
   React.useEffect(() => {
     if (widgetRef.current) {
@@ -111,15 +123,31 @@ export default function StepFechas({ onNext }) {
         }
         .step-fechas-input-group {
           position: relative;
+          display: flex;
+          align-items: center;
+          /* Make react-datepicker wrapper stretch so icon positioning is consistent */
+          gap: 0; /* avoid extra spacing */
+        }
+        .step-fechas-input-group .react-datepicker-wrapper,
+        .step-fechas-input-group .react-datepicker__input-container {
+          width: 100%;
+          display: block;
+          position: relative;
+          z-index: 1; /* sit below the icon */
+        }
+        .step-fechas-input-group .react-datepicker__input-container input {
+          width: 100%;
+          box-sizing: border-box;
         }
         .step-fechas-icon {
           position: absolute;
-          left: 0.5rem;
+          left: 0.6rem;
           top: 50%;
           transform: translateY(-50%);
           color: #6b7280;
-          font-size: 1.4rem;
+          font-size: 1.1rem;
           pointer-events: none;
+          z-index: 2; /* keep icon above DatePicker input container */
         }
         .step-fechas-input {
           width: 100%;
@@ -137,13 +165,134 @@ export default function StepFechas({ onNext }) {
           align-items: center;
         }
         .step-fechas-input-icon {
-          padding-left: 3.2rem !important;
+          /* Desktop/base: tighter spacing between icon and text */
+          padding-left: 2.2rem !important;
           height: 44px !important;
-          font-size: 1.1rem !important;
+          font-size: 1.05rem !important;
+        }
+        /* Extra padding for text inputs like 'Sucursal' to prevent icon overlap */
+        input[type="text"].step-fechas-input-icon,
+        input[disabled][type="text"].step-fechas-input-icon {
+          padding-left: 2.5rem !important; /* base desktop */
         }
         .step-fechas-input:focus {
-          border-color: #6366f1;
+          border-color: var(--wr-brand);
         }
+        /* Ensure extra padding for time inputs with left icon */
+        input[type="time"].step-fechas-input-icon {
+          padding-left: 2.2rem !important; /* base desktop */
+        }
+  /* Ocultar iconos nativos del input time para evitar doble icono con el SVG */
+  .step-fechas-input[type="time"]::-webkit-calendar-picker-indicator { display: none; -webkit-appearance: none; }
+  .step-fechas-input[type="time"]::-webkit-clear-button { display: none; -webkit-appearance: none; }
+  .step-fechas-input[type="time"]::-webkit-inner-spin-button,
+  .step-fechas-input[type="time"]::-webkit-outer-spin-button { display: none; -webkit-appearance: none; margin: 0; }
+  .step-fechas-input[type="time"] { -moz-appearance: textfield; appearance: textfield; }
+  /* Remove space reserved by indicator in some browsers */
+  .step-fechas-input[type="time"]::-webkit-datetime-edit-fields-wrapper { padding: 0; }
+  .step-fechas-input[type="time"]::-webkit-datetime-edit { padding: 0; }
+
+        /* ====== React DatePicker themed styles (scoped) ====== */
+        .step-fechas-datepicker-calendar.react-datepicker {
+          border: 1px solid #e5e7eb;
+          box-shadow: 0 8px 28px rgba(60,60,60,0.18);
+          border-radius: 14px;
+          overflow: hidden;
+          background: #fff;
+        }
+        .step-fechas-datepicker-calendar .react-datepicker__triangle { display: none; }
+        .step-fechas-datepicker-calendar .react-datepicker__header {
+          background: #f7f7fb;
+          border-bottom: 1px solid #eceff4;
+          padding-top: 0.75rem;
+          padding-bottom: 0.5rem;
+          border-top-left-radius: 14px;
+          border-top-right-radius: 14px;
+        }
+        .step-fechas-datepicker-calendar .react-datepicker__current-month {
+          font-weight: 700;
+          color: #111827;
+          text-transform: capitalize;
+          margin-bottom: 0.4rem; /* add space before dropdowns */
+        }
+        .step-fechas-datepicker-calendar .react-datepicker__header__dropdown {
+          display: flex;
+          justify-content: center;
+          gap: 0.5rem;
+          margin-top: 0.1rem;
+          margin-bottom: 0.2rem;
+        }
+        .step-fechas-datepicker-calendar .react-datepicker__month-dropdown-container--select,
+        .step-fechas-datepicker-calendar .react-datepicker__year-dropdown-container--select {
+          margin: 0 0.15rem;
+        }
+        .step-fechas-datepicker-calendar .react-datepicker__month {
+          margin: 0.5rem;
+        }
+        .step-fechas-datepicker-calendar .react-datepicker__day-name {
+          color: #6b7280;
+          font-weight: 600;
+          width: 2.2rem;
+          line-height: 2.2rem;
+          margin: 0.2rem;
+        }
+        .step-fechas-datepicker-calendar .react-datepicker__day {
+          border-radius: 8px;
+          width: 2.2rem;
+          line-height: 2.2rem;
+          margin: 0.2rem;
+          color: #111827;
+        }
+        .step-fechas-datepicker-calendar .react-datepicker__day:hover {
+          background: rgba(46,204,113,0.12);
+          color: var(--wr-brand);
+        }
+        .step-fechas-datepicker-calendar .react-datepicker__day--selected,
+        .step-fechas-datepicker-calendar .react-datepicker__day--in-selecting-range,
+        .step-fechas-datepicker-calendar .react-datepicker__day--in-range {
+          background: var(--wr-brand);
+          color: #fff;
+        }
+        .step-fechas-datepicker-calendar .react-datepicker__day--keyboard-selected {
+          background: #e5e7eb;
+          color: #111827;
+        }
+        .step-fechas-datepicker-calendar .react-datepicker__navigation-icon::before {
+          border-color: var(--wr-brand);
+          top: 8px;
+        }
+        .step-fechas-datepicker-calendar .react-datepicker__navigation--previous,
+        .step-fechas-datepicker-calendar .react-datepicker__navigation--next { outline: none; }
+        .step-fechas-datepicker-calendar .react-datepicker__month-dropdown-container--select select,
+        .step-fechas-datepicker-calendar .react-datepicker__year-dropdown-container--select select {
+          border: 1px solid #d1d5db;
+          border-radius: 8px;
+          padding: 0.25rem 0.5rem;
+          background: #fff;
+          color: #111827;
+        }
+        .step-fechas-datepicker-calendar .react-datepicker__day--outside-month { color: #cbd5e1; }
+        .step-fechas-datepicker-calendar .react-datepicker__day--disabled {
+          color: #cbd5e1 !important;
+          opacity: 0.7;
+          cursor: not-allowed;
+          pointer-events: none;
+          background: transparent !important;
+        }
+        .step-fechas-datepicker-calendar .react-datepicker__day--disabled:hover {
+          background: transparent !important;
+          color: #cbd5e1 !important;
+        }
+        .step-fechas-datepicker-calendar .react-datepicker__day--today {
+          box-shadow: inset 0 0 0 2px #a5b4fc;
+          border-radius: 8px;
+        }
+        .step-fechas-datepicker-calendar .react-datepicker__day--disabled.react-datepicker__day--today {
+          box-shadow: none; /* remove today ring if disabled */
+        }
+        /* Ensure the calendar popper overlays surrounding UI */
+        .react-datepicker-popper { z-index: 50; }
+
         .step-fechas-btn-grid-item {
           min-width: 180px;
           flex: 1 1 180px;
@@ -162,7 +311,7 @@ export default function StepFechas({ onNext }) {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #5747ea;
+          background: var(--wr-brand);
           color: #fff;
           border: none;
           transition: background 0.2s, transform 0.2s;
@@ -174,6 +323,12 @@ export default function StepFechas({ onNext }) {
           cursor: not-allowed;
         }
         @media (max-width: 900px) {
+          /* On mobile, restore larger paddings to avoid overlap and keep comfortable touch targets */
+          .step-fechas-icon { left: 0.8rem; }
+          .step-fechas-input-icon { padding-left: 2.8rem !important; }
+          input[type="text"].step-fechas-input-icon,
+          input[disabled][type="text"].step-fechas-input-icon { padding-left: 3.2rem !important; }
+          input[type="time"].step-fechas-input-icon { padding-left: 2.8rem !important; }
           .step-fechas-card {
             padding: 1.2rem 0.5rem;
           }
@@ -238,7 +393,8 @@ export default function StepFechas({ onNext }) {
                   }}
                   minDate={today.toDate()}
                   dateFormat="dd/MM/yy"
-                  placeholderText="DD/MM/A"
+                  placeholderText="DD/MM/AA"
+                  todayButton="Hoy"
                   withPortal
                   showMonthDropdown
                   showYearDropdown
@@ -253,13 +409,14 @@ export default function StepFechas({ onNext }) {
               </div>
             </div>
             <div className="step-fechas-grid-item">
-              <label className="step-fechas-label" htmlFor="start-time">Hora de entrega</label>
-              <div className="step-fechas-input-group">
+              <label className="step-fechas-label" htmlFor="start-time">Hora de retiro</label>
+        <div className="step-fechas-input-group" onClick={() => openTimePicker(startTimeRef)} style={{cursor:'pointer'}}>
                 <span className="step-fechas-icon"><FaRegClock /></span>
                 <input
                   id="start-time"
                   type="time"
                   className="step-fechas-input step-fechas-input-icon"
+          ref={startTimeRef}
                   value={horaRetiro}
                   onChange={e => setHoraRetiro(e.target.value)}
                   required
@@ -277,7 +434,8 @@ export default function StepFechas({ onNext }) {
                   onChange={date => setFechaDevolucion(date)}
                   minDate={fechaRetiro || today.toDate()}
                   dateFormat="dd/MM/yy"
-                  placeholderText="DD/MM/A"
+                  placeholderText="DD/MM/AA"
+                  todayButton="Hoy"
                   withPortal
                   showMonthDropdown
                   showYearDropdown
@@ -294,12 +452,13 @@ export default function StepFechas({ onNext }) {
             </div>
             <div className="step-fechas-grid-item">
               <label className="step-fechas-label" htmlFor="end-time">Hora de devolución</label>
-              <div className="step-fechas-input-group">
+        <div className="step-fechas-input-group" onClick={() => openTimePicker(endTimeRef)} style={{cursor:'pointer'}}>
                 <span className="step-fechas-icon"><FaRegClock /></span>
                 <input
                   id="end-time"
                   type="time"
                   className="step-fechas-input step-fechas-input-icon"
+          ref={endTimeRef}
                   value={horaDevolucion}
                   onChange={e => setHoraDevolucion(e.target.value)}
                   required
@@ -311,11 +470,11 @@ export default function StepFechas({ onNext }) {
             {/* Botón igual a la referencia: texto, ancho completo, alineado */}
             <div className="step-fechas-btn-grid-item">
               <button
-                className="step-fechas-btn"
+                className="wr-btn wr-btn--primary wr-btn--block step-fechas-btn"
                 type="submit"
                 disabled={!isValid}
               >
-                Siguiente
+                Cotizar alquiler
               </button>
             </div>
           </div>

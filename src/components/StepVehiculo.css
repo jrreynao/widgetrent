@@ -295,3 +295,12 @@
     margin: 0 auto 0.5rem auto !important;
   }
 }
+
+/* Compact mobile */
+@media (max-width: 650px) {
+  .vehiculo-categoria-card { min-height: 70px !important; padding: 0.7rem 0.6rem !important; }
+  .vehiculo-categoria-card span[style*='width: 60px'] { width: 44px !important; height: 44px !important; }
+  .vehiculo-categoria-card div[style*='font-size:1.15rem'] { font-size: 1rem !important; }
+  .vehiculo-categoria-card div[style*='font-size:0.98rem'] { font-size: 0.9rem !important; }
+  .vehiculo-categoria-card div[style*='font-size:1.1rem'] { font-size: 1rem !important; }
+}

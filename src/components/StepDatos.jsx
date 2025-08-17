@@ -55,30 +55,30 @@ const StepDatos = ({ onNext, onBack, initialData = {}, extrasSeleccionados = [] 
       <div className="step-datos-desktop-card" style={{width:'100%', maxWidth:'1200px', margin:'2rem auto', boxSizing:'border-box', background:'#fff', borderRadius:'20px', boxShadow:'0 8px 32px 0 rgba(60,60,60,0.10)', padding:'2.5rem 1.5rem'}}>
         <form className="step-datos-form" onSubmit={handleSubmit} style={{width:'100%', margin:0, padding:0, boxSizing:'border-box'}}>
           <div style={{textAlign:'center', marginBottom:'1.5rem'}}>
-            <h2 style={{fontSize:'2.2rem', fontWeight:800, color:'#222', marginBottom:'0.5rem'}}>Completa tus datos para la reserva</h2>
-            <div style={{fontSize:'1.1rem', color:'#555'}}>Un último paso para asegurar tu vehículo.</div>
+            <h2 className="step-datos-title" style={{fontSize:'2.2rem', fontWeight:800, color:'#222', marginBottom:'0.5rem'}}>Completa tus datos para la reserva</h2>
+            <div className="step-datos-subtitle" style={{fontSize:'1.1rem', color:'#555'}}>Un último paso para asegurar tu vehículo.</div>
           </div>
           <div className="datos-fields" style={{display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:'1.2rem', marginBottom:'2.5rem', width:'100%'}}>
             {/* Nombre y Apellido */}
-            <label className="field-full datos-label" style={{fontWeight:600, fontSize:'1rem', color:'#222', display:'flex', flexDirection:'column', gap:'0.2rem'}}>
+            <label className="field-full datos-label" style={{gridColumn:'span 1', fontWeight:600, fontSize:'1rem', color:'#222', display:'flex', flexDirection:'column', gap:'0.2rem'}}>
               <span style={{marginBottom:'0.1rem'}}>Nombre y Apellido</span>
               <input className="datos-input" type="text" value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Ej: Juan Pérez" style={{fontSize:'1rem', padding:'0.7rem 1rem', borderRadius:'10px', border:'1px solid #e5e7eb'}} />
               {errores.nombre && <span className="datos-error" style={{color:'#e23c3c', fontSize:'0.95rem'}}>{errores.nombre}</span>}
             </label>
             {/* Email */}
-            <label className="field-full datos-label" style={{fontWeight:600, fontSize:'1rem', color:'#222', display:'flex', flexDirection:'column', gap:'0.2rem'}}>
+            <label className="field-full datos-label" style={{gridColumn:'span 1', fontWeight:600, fontSize:'1rem', color:'#222', display:'flex', flexDirection:'column', gap:'0.2rem'}}>
               <span style={{marginBottom:'0.1rem'}}>Email</span>
               <input className="datos-input" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="juan.perez@email.com" style={{fontSize:'1rem', padding:'0.7rem 1rem', borderRadius:'10px', border:'1px solid #e5e7eb'}} />
               {errores.email && <span className="datos-error" style={{color:'#e23c3c', fontSize:'0.95rem'}}>{errores.email}</span>}
             </label>
             {/* Teléfono */}
-            <label className="field-full datos-label" style={{fontWeight:600, fontSize:'1rem', color:'#222', display:'flex', flexDirection:'column', gap:'0.2rem'}}>
+            <label className="field-full datos-label" style={{gridColumn:'span 1', fontWeight:600, fontSize:'1rem', color:'#222', display:'flex', flexDirection:'column', gap:'0.2rem'}}>
               <span style={{marginBottom:'0.1rem'}}>Teléfono</span>
               <input className="datos-input" type="tel" value={telefono} onChange={e => setTelefono(e.target.value)} placeholder="Ej: +54 9 11 1234-5678" autoComplete="tel" required style={{fontSize:'1rem', padding:'0.7rem 1rem', borderRadius:'10px', border:'1px solid #e5e7eb'}} />
               {errores.telefono && <span className="datos-error" style={{color:'#e23c3c', fontSize:'0.95rem'}}>{errores.telefono}</span>}
             </label>
             {/* DNI o Pasaporte */}
-            <label className="field-full datos-label" style={{fontWeight:600, fontSize:'1rem', color:'#222', display:'flex', flexDirection:'column', gap:'0.2rem'}}>
+            <label className="field-full datos-label" style={{gridColumn:'span 1', fontWeight:600, fontSize:'1rem', color:'#222', display:'flex', flexDirection:'column', gap:'0.2rem'}}>
               <span style={{marginBottom:'0.1rem'}}>N° DNI o Pasaporte</span>
               <input className="datos-input" type="text" value={dni} onChange={e => setDni(e.target.value)} placeholder="Ingresa tu número de documento" style={{fontSize:'1rem', padding:'0.7rem 1rem', borderRadius:'10px', border:'1px solid #e5e7eb'}} />
               {errores.dni && <span className="datos-error" style={{color:'#e23c3c', fontSize:'0.95rem'}}>{errores.dni}</span>}
@@ -94,17 +94,17 @@ const StepDatos = ({ onNext, onBack, initialData = {}, extrasSeleccionados = [] 
             {/* Nota */}
             <label className="field-full datos-label" style={{gridColumn: mostrarDireccion ? 'span 2' : 'span 1', fontWeight:600, fontSize:'1rem', color:'#222', display:'flex', flexDirection:'column', gap:'0.2rem'}}>
               <span style={{marginBottom:'0.1rem'}}>Nota (opcional)</span>
-              <textarea className="datos-input" value={nota} onChange={e => setNota(e.target.value)} rows={2} placeholder="¿Alguna aclaración que debamos tener en cuenta?" style={{fontSize:'1rem', padding:'0.7rem 1rem', borderRadius:'10px', border:'1px solid #e5e7eb'}} />
+              <textarea className="datos-input datos-textarea" value={nota} onChange={e => setNota(e.target.value)} rows={2} placeholder="¿Alguna aclaración que debamos tener en cuenta?" style={{fontSize:'1rem', padding:'0.7rem 1rem', borderRadius:'10px', border:'1px solid #e5e7eb'}} />
             </label>
             {/* Tarjeta de crédito */}
-            <div className="field-full datos-checkbox" style={{gridColumn:'span 1', display: 'flex', flexDirection: 'column', gap: '0.3rem', fontWeight: 600, fontSize:'1rem', color:'#222'}}>
-              <div style={{marginBottom:'0.5rem', fontWeight:700}}>¿Posee tarjeta de crédito?</div>
-              <div style={{display:'flex', gap:'1rem', width:'100%'}}>
+            <div className="field-full datos-checkbox" style={{gridColumn: 'span 1', display: 'flex', flexDirection: 'column', gap: '0.3rem', fontWeight: 600, fontSize:'1rem', color:'#222'}}>
+              <div style={{marginBottom:'0.35rem', fontWeight:700}}>¿Posee tarjeta de crédito?</div>
+              <div className="datos-si-no" style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.6rem', width:'100%'}}>
                 <button
                   type="button"
                   className={`datos-checkbox-btn${tieneTarjeta === true ? ' selected-si' : ''}`}
                   onClick={() => setTieneTarjeta(true)}
-                  style={{fontSize:'1rem', padding:'0.7rem 1.2rem', borderRadius:'10px', border:'1px solid #e5e7eb', background:tieneTarjeta===true?'#e6fbe7':'#fff', color:'#222', fontWeight:600, display:'flex', alignItems:'center', gap:'0.5em'}}
+                  style={{fontSize:'1rem', padding:'0.7rem 1.2rem', borderRadius:'10px', border:'1px solid #e5e7eb', background:tieneTarjeta===true?'#e6fbe7':'#fff', color:'#222', fontWeight:600, display:'flex', alignItems:'center', justifyContent:'center', gap:'0.5em', width:'100%', flex:'1 1 0'}}
                 >
                   <span style={{color:'#1bbf4c', fontSize:'1.3em'}}>&#10004;</span> Sí
                 </button>
@@ -112,7 +112,7 @@ const StepDatos = ({ onNext, onBack, initialData = {}, extrasSeleccionados = [] 
                   type="button"
                   className={`datos-checkbox-btn${tieneTarjeta === false ? ' selected-no' : ''}`}
                   onClick={() => setTieneTarjeta(false)}
-                  style={{fontSize:'1rem', padding:'0.7rem 1.2rem', borderRadius:'10px', border:'1px solid #e5e7eb', background:tieneTarjeta===false?'#fdeaea':'#fff', color:'#222', fontWeight:600, display:'flex', alignItems:'center', gap:'0.5em'}}
+                  style={{fontSize:'1rem', padding:'0.7rem 1.2rem', borderRadius:'10px', border:'1px solid #e5e7eb', background:tieneTarjeta===false?'#fdeaea':'#fff', color:'#222', fontWeight:600, display:'flex', alignItems:'center', justifyContent:'center', gap:'0.5em', width:'100%', flex:'1 1 0'}}
                 >
                   <span style={{color:'#e23c3c', fontSize:'1.3em'}}>&#10008;</span> No
                 </button>
@@ -120,9 +120,9 @@ const StepDatos = ({ onNext, onBack, initialData = {}, extrasSeleccionados = [] 
               {tieneTarjeta === null && <span className="datos-error" style={{color:'#e23c3c', fontSize:'0.95rem'}}>Selecciona una opción</span>}
             </div>
           </div>
-          <div className="datos-btns" style={{display:'flex', justifyContent:'flex-end', marginTop:'1.5rem', width:'100%'}}>
-            <button type="button" className="back-btn-datos" style={{background:'#eee', color:'#333', border:'none', borderRadius:'12px', padding:'0.9rem 2.2rem', fontSize:'1.1rem', fontWeight:700, marginRight:'1rem', boxShadow:'0 2px 8px rgba(255,102,0,0.08)', cursor:'pointer'}} onClick={onBack}>&larr; Atrás</button>
-            <button type="submit" className="next-btn-datos" style={{background:'#4f46e5', color:'#fff', border:'none', borderRadius:'12px', padding:'0.9rem 2.2rem', fontSize:'1.1rem', fontWeight:700, boxShadow:'0 4px 16px 0 rgba(60,60,60,0.10)', cursor:'pointer'}}>Confirmar Datos &rarr;</button>
+          <div className="datos-btns" style={{display:'flex', justifyContent:'flex-end', marginTop:'1.5rem', width:'100%', gap:'1rem'}}>
+            <button type="button" className="wr-btn wr-btn--secondary" onClick={onBack}>← Atrás</button>
+            <button type="submit" className="wr-btn wr-btn--primary">Confirmar Datos →</button>
           </div>
         </form>
       </div>
@@ -132,51 +132,36 @@ const StepDatos = ({ onNext, onBack, initialData = {}, extrasSeleccionados = [] 
           min-width: 0;
           box-sizing: border-box;
         }
-        @media (max-width: 600px) {
+  .datos-si-no { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 1rem; width: 100%; align-items: stretch; }
+  .datos-si-no .datos-checkbox-btn { width: 100%; justify-content: center; }
+  @media (max-width: 480px) {
+          /* Mantener Sí/No en dos columnas en móvil y compactar espaciado */
+          .datos-si-no { grid-template-columns: repeat(2, minmax(0,1fr)) !important; gap: 0.6rem !important; }
+          .datos-si-no .datos-checkbox-btn { width: 100% !important; }
+          .datos-textarea { height: 3rem !important; }
+          .step-datos-title { font-size: 1.45rem !important; margin-bottom: 0.35rem !important; }
+          .step-datos-subtitle { font-size: 0.95rem !important; }
           .step-datos-desktop-card {
             max-width: 98vw !important;
-            margin: 1.2rem 0 !important;
+            margin: 0.9rem 0 !important;
             border-radius: 16px !important;
-            padding: 1.1rem 0.7rem !important;
+            padding: 0.9rem 0.6rem !important;
             box-shadow: 0 4px 16px 0 rgba(60,60,60,0.10) !important;
           }
-          .datos-fields {
-            grid-template-columns: 1fr !important;
-            gap: 0.9rem !important;
-            margin-bottom: 1.2rem !important;
-          }
-          .datos-fields .datos-label {
-            font-size: 1rem !important;
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 0.2rem !important;
-          }
-          .datos-fields .datos-input {
-            font-size: 1rem !important;
-            padding: 0.7rem 1rem !important;
-            border-radius: 10px !important;
-            border: 1px solid #e5e7eb !important;
-          }
-          .datos-fields .datos-checkbox {
-            width: 100% !important;
-            min-width: 0 !important;
-            font-size: 1rem !important;
-          }
-          .datos-btns {
-            flex-direction: column !important;
-            gap: 0.7rem !important;
-            margin-top: 0.7rem !important;
-            align-items: stretch !important;
-          }
-          .back-btn-datos, .next-btn-datos {
-            width: 100% !important;
-            margin-right: 0 !important;
-            margin-bottom: 0 !important;
-            font-size: 1.1rem !important;
-            padding: 0.9rem 0 !important;
-          }
+          .datos-fields { grid-template-columns: 1fr !important; gap: 0.7rem !important; margin-bottom: 0.9rem !important; }
+          .datos-fields .datos-label { font-size: 0.98rem !important; }
+          .datos-fields .datos-input { font-size: 0.98rem !important; padding: 0.58rem 0.85rem !important; border-radius: 10px !important; border: 1px solid #e5e7eb !important; }
+          .datos-fields .datos-checkbox { width: 100% !important; min-width: 0 !important; font-size: 0.98rem !important; }
+          .datos-btns { flex-direction: row !important; gap: 0.5rem !important; margin-top: 0.4rem !important; align-items: center !important; justify-content: flex-end !important; flex-wrap: nowrap !important; }
+          .datos-btns .wr-btn { flex: 0 0 auto !important; width: auto !important; padding: 0.7rem 0.8rem !important; font-size: 1.02rem !important; }
         }
-        @media (max-width: 900px) {
+        @media (max-width: 360px) {
+          .datos-si-no { gap: 0.5rem !important; }
+          .datos-si-no .datos-checkbox-btn { padding: 0.55rem 0.7rem !important; font-size: 0.95rem !important; }
+          .step-datos-title { font-size: 1.35rem !important; }
+          .step-datos-subtitle { font-size: 0.9rem !important; }
+        }
+  @media (max-width: 768px) {
           .step-datos-desktop-card {
             max-width: 98vw !important;
             margin: 1.2rem 0 !important;
@@ -194,20 +179,17 @@ const StepDatos = ({ onNext, onBack, initialData = {}, extrasSeleccionados = [] 
             min-width: 0;
             font-size: 1rem !important;
           }
-          .datos-btns {
-            flex-direction: column !important;
-            gap: 0.7rem !important;
-            margin-top: 0.7rem !important;
-            align-items: stretch !important;
-          }
-          .back-btn-datos, .next-btn-datos {
-            width: 100% !important;
-            margin-right: 0 !important;
-            margin-bottom: 0 !important;
-            font-size: 1.1rem !important;
-            padding: 0.9rem 0 !important;
-          }
+          .step-datos-title { font-size: 1.7rem !important; }
+          .step-datos-subtitle { font-size: 1rem !important; }
+          .datos-btns { flex-direction: row !important; gap: 0.7rem !important; margin-top: 0.6rem !important; align-items: center !important; }
+          .datos-btns .wr-btn { flex: 1 1 0 !important; }
         }
+        /* Escritorio: mantener botones como en otros pasos (alineados a la derecha, sin estirar) */
+        @media (min-width: 769px) {
+          .datos-btns { justify-content: flex-end !important; gap: 1rem !important; }
+          .datos-btns .wr-btn { flex: 0 0 auto !important; }
+        }
+        
       `}</style>
     </div>
   );

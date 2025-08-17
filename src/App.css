@@ -1,3 +1,117 @@
+/* Design tokens */
+:root {
+  --wr-radius: 14px;
+  --wr-gap: 0.7rem;
+  --wr-gap-sm: 0.5rem;
+  --wr-pad: 1rem;
+  --wr-pad-sm: 0.6rem;
+  --wr-font: 15px;
+  --wr-font-sm: 14px;
+  --wr-muted: #6b7280;
+  --wr-fg: #222;
+  --wr-bg: #fff;
+  --wr-surface: #f5f6f8;
+  /* Brand palette aligned with site */
+  --wr-brand: #2ecc71; /* primary green */
+  --wr-heading: #2e2a6e; /* deep indigo/purple for titles */
+  --wr-accent: #6b5cff; /* optional secondary accent (purple) */
+}
+
+/* Normalize base */
+.step-fechas-bg,
+.step-vehiculo-form,
+.step-extras-form,
+.step-datos-bg,
+.step-confirmar,
+.step-confirmar-mobile {
+  background: var(--wr-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Cards */
+.step-fechas-card,
+.vehiculo-card-container,
+.extras-card-container,
+.step-datos-desktop-card,
+.confirmar-card,
+.confirmar-card-mobile {
+  background: var(--wr-bg);
+  border-radius: var(--wr-radius);
+  box-shadow: 0 8px 24px rgba(60,60,60,0.08);
+  padding: calc(var(--wr-pad) * 1.5) var(--wr-pad);
+  width: 100%;
+  max-width: 1100px;
+  margin: var(--wr-pad) auto;
+  box-sizing: border-box;
+}
+
+/* Inputs/labels/buttons baseline */
+.step-fechas-label,
+.datos-label { color: var(--wr-fg); font-weight: 600; }
+.vehiculo-card-container h1, .vehiculo-card-container h2,
+.extras-card-container h1, .extras-card-container h2,
+.step-datos-desktop-card h1, .step-datos-desktop-card h2,
+.confirmar-card h1, .confirmar-card h2,
+.confirmar-card-mobile h1, .confirmar-card-mobile h2 { color: var(--wr-heading); }
+.step-fechas-input,
+.datos-input { font-size: 1rem; padding: 0.6rem 0.8rem; border-radius: 10px; }
+
+/* Standard buttons (same look as StepDatos) */
+.wr-btn { 
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0.9rem 2.2rem; font-size: 1.1rem; font-weight: 700;
+  border-radius: 12px; border: none; cursor: pointer; text-align: center;
+}
+.wr-btn--primary { background: var(--wr-brand); color: #fff; box-shadow: 0 4px 16px rgba(60,60,60,0.10); }
+.wr-btn--secondary { background: #eee; color: #333; box-shadow: 0 2px 8px rgba(255,102,0,0.08); }
+.wr-btn--block { width: 100%; }
+.wr-btn:disabled { background: #eee; color: #aaa; cursor: not-allowed; box-shadow: none; }
+
+.step-fechas-btn,
+.next-btn-datos,
+.back-btn-datos,
+.next-btn-confirmar,
+.back-btn-confirmar { border-radius: 12px; font-weight: 700; }
+
+/* Compact mobile overrides */
+@media (max-width: 650px) {
+  :root { --wr-font: var(--wr-font-sm); }
+  html, body, #root { font-size: var(--wr-font); }
+  .step-fechas-card,
+  .vehiculo-card-container,
+  .extras-card-container,
+  .step-datos-desktop-card,
+  .confirmar-card,
+  .confirmar-card-mobile { padding: var(--wr-pad-sm); margin: var(--wr-gap-sm) auto; border-radius: 12px; }
+  .step-fechas-input { height: 36px; padding: 0.5rem 0.7rem !important; font-size: 0.95rem !important; }
+  .step-fechas-icon { font-size: 1.1rem !important; }
+  .step-fechas-btn,
+  .wr-btn,
+  .next-btn-datos,
+  .back-btn-datos,
+  .next-btn-confirmar,
+  .back-btn-confirmar { padding: 0.7rem 1rem !important; font-size: 0.98rem !important; }
+  /* Icons inside cards */
+  .vehiculo-categoria-card svg,
+  .extras-list-responsive svg { width: 24px !important; height: 24px !important; }
+
+  /* Standard mobile headings (match confirmar) */
+  .vehiculo-card-container h1,
+  .vehiculo-card-container h2,
+  .extras-card-container h1,
+  .extras-card-container h2,
+  .step-datos-desktop-card h1,
+  .step-datos-desktop-card h2 { font-size: 1.2rem !important; line-height: 1.2 !important; }
+  .vehiculo-card-container h1 + div,
+  .vehiculo-card-container h2 + div,
+  .extras-card-container h1 + div,
+  .extras-card-container h2 + div,
+  .step-datos-desktop-card h1 + div,
+  .step-datos-desktop-card h2 + div { font-size: 0.95rem !important; }
+}
+
 /* Estilos modernos para el widget de fechas y horas */
 
 .step-fechas-container {
@@ -86,7 +200,7 @@
 }
 
 .step-fechas-input:focus {
-  border-color: #ff9800;
+  border-color: var(--wr-brand);
   outline: none;
 }
 
@@ -106,11 +220,11 @@
   padding: 0.7em 0;
   font-size: clamp(1em, 2vw, 1.1em);
   font-weight: 700;
-  background: linear-gradient(90deg, #ff9800 60%, #ffb300 100%);
+  background: var(--wr-brand);
   color: #fff;
   border: none;
   border-radius: 0.5em;
-  box-shadow: 0 2px 8px rgba(255,152,0,0.12);
+  box-shadow: 0 2px 8px rgba(46,204,113,0.18);
   cursor: pointer;
   transition: background 0.2s;
 }

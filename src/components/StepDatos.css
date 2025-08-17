@@ -1,0 +1,7 @@
+/* Compact mobile sizing for datos form */
+@media (max-width: 650px) {
+	.datos-fields { gap: 0.7rem !important; }
+	.datos-label { font-size: 0.95rem !important; }
+	.datos-input { font-size: 0.95rem !important; padding: 0.6rem 0.8rem !important; }
+	.datos-checkbox { font-size: 0.95rem !important; }
+}

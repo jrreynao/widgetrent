@@ -1,4 +1,3 @@
-
 import React from "react";
 import { FaTruck, FaUserPlus, FaCrosshairs, FaChild } from "react-icons/fa";
 
@@ -51,9 +50,9 @@ const StepExtras = ({ extras, selectedExtras, onChange, onNext, onBack }) => {
                 <label
                   key={extra.id}
                   htmlFor={`extra-${extra.id}`}
-                  style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', flex: '1 1 220px', minWidth: 0, border: selectedExtras.includes(extra.id) ? '2.5px solid #4f46e5' : '1.5px solid #e5e7eb', background: selectedExtras.includes(extra.id) ? '#f6f7ff' : '#fff', borderRadius: '16px', boxShadow:'0 2px 12px rgba(0,0,0,0.07)', padding: '0.7rem 0.7rem', minHeight: '70px', maxWidth: '100%', transition:'border 0.2s, box-shadow 0.2s', marginBottom:'0'}}>
+                  style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', flex: '1 1 220px', minWidth: 0, border: selectedExtras.includes(extra.id) ? '2.5px solid var(--wr-brand)' : '1.5px solid #e5e7eb', background: selectedExtras.includes(extra.id) ? 'rgba(46,204,113,0.06)' : '#fff', borderRadius: '16px', boxShadow:'0 2px 12px rgba(0,0,0,0.07)', padding: '0.7rem 0.7rem', minHeight: '70px', maxWidth: '100%', transition:'border 0.2s, box-shadow 0.2s', marginBottom:'0'}}>
                   <span style={{ flex: '0 0 auto', marginRight: '1.1rem', background: '#f8f8f8', borderRadius: '12px', width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Icon size={38} color="#4f46e5" />
+                    <Icon size={38} color="var(--wr-brand)" />
                   </span>
                   <span style={{ display: 'flex', flexDirection: 'column', flex: '1 1 0', minWidth: 0, justifyContent: 'center', alignItems: 'flex-start', textAlign: 'left' }}>
                     <span style={{ fontWeight: 700, fontSize: '1.15rem', color: '#222', marginBottom: '0.2rem', lineHeight: '1.2' }}>{titulo}</span>
@@ -65,13 +64,38 @@ const StepExtras = ({ extras, selectedExtras, onChange, onNext, onBack }) => {
                     id={`extra-${extra.id}`}
                     checked={selectedExtras.includes(extra.id)}
                     onChange={() => onChange(extra.id)}
-                    style={{ flex: '0 0 auto', marginLeft: '1rem', alignSelf: 'center', width: '1.4em', height: '1.4em', accentColor: '#4f46e5', borderRadius: '6px', border: '1px solid #e0e0e0', background: '#fff' }}
+                    className="extras-check"
+                    style={{ flex: '0 0 auto', marginLeft: '1rem', alignSelf: 'center' }}
                   />
                 </label>
               );
             })}
           </div>
           <style>{`
+            /* Modern circular dot checkbox */
+            .extras-check {
+              appearance: none;
+              -webkit-appearance: none;
+              width: 22px; height: 22px;
+              border-radius: 50%;
+              border: 2px solid var(--wr-brand);
+              display: grid; place-content: center;
+              background: #fff;
+              outline: none;
+              transition: box-shadow 0.15s ease, border-color 0.15s ease;
+            }
+            .extras-check::before {
+              content: "";
+              width: 10px; height: 10px;
+              border-radius: 50%;
+              transform: scale(0);
+              transition: transform 0.15s ease-in-out;
+              background: var(--wr-brand);
+            }
+            .extras-check:checked::before { transform: scale(1); }
+            .extras-check:focus-visible { box-shadow: 0 0 0 3px rgba(46,204,113,0.25); }
+            .extras-check:disabled { opacity: 0.5; cursor: not-allowed; }
+
             @media (min-width: 700px) {
               .extras-list-responsive {
                 flex-direction: row !important;
@@ -108,10 +132,25 @@ const StepExtras = ({ extras, selectedExtras, onChange, onNext, onBack }) => {
               }
             }
           `}</style>
-          <div style={{display:'flex', justifyContent:'flex-end', marginTop:'1.5rem'}}>
-            <button type="button" onClick={onBack} style={{background:'#eee', color:'#333', border:'none', borderRadius:'12px', padding:'0.9rem 2.2rem', fontSize:'1.1rem', fontWeight:700, marginRight:'1rem', boxShadow:'0 2px 8px rgba(255,102,0,0.08)', cursor:'pointer'}}>Atrás</button>
-            <button type="submit" style={{background:'#4f46e5', color:'#fff', border:'none', borderRadius:'12px', padding:'0.9rem 2.2rem', fontSize:'1.1rem', fontWeight:700, boxShadow:'0 4px 16px 0 rgba(60,60,60,0.10)', cursor:'pointer', display:'flex', alignItems:'center', gap:'0.7em'}}>Siguiente <span style={{fontSize:'1.3em', display:'inline-block', marginLeft:'0.3em'}}>&rarr;</span></button>
+          {/* Botonera estandarizada como en Datos */}
+          <div className="extras-btns" style={{display:'flex', justifyContent:'flex-end', marginTop:'1.5rem', gap:'1rem'}}>
+            <button type="button" onClick={onBack} className="wr-btn wr-btn--secondary">← Atrás</button>
+            <button type="submit" className="wr-btn wr-btn--primary" style={{display:'inline-flex', alignItems:'center', gap:'0.5em'}}>Siguiente →</button>
           </div>
+          <style>{`
+            @media (max-width: 480px) {
+              .extras-btns { flex-direction: row !important; gap: 0.5rem !important; margin-top: 0.4rem !important; align-items: center !important; justify-content: flex-end !important; flex-wrap: nowrap !important; }
+              .extras-btns .wr-btn { flex: 0 0 auto !important; width: auto !important; padding: 0.7rem 0.8rem !important; font-size: 1.02rem !important; }
+            }
+            @media (max-width: 768px) {
+              .extras-btns { flex-direction: row !important; gap: 0.7rem !important; margin-top: 0.6rem !important; align-items: center !important; }
+              .extras-btns .wr-btn { flex: 1 1 0 !important; }
+            }
+            @media (min-width: 769px) {
+              .extras-btns { justify-content: flex-end !important; gap: 1rem !important; }
+              .extras-btns .wr-btn { flex: 0 0 auto !important; }
+            }
+          `}</style>
         </form>
       </div>
     </div>

@@ -17,8 +17,7 @@ if (mountPoint) {
       import('./components/StepFechas.css?raw'),
       import('./components/StepVehiculo.css?raw'),
       import('./components/StepExtras.css?raw'),
-      import('./components/StepDatos.css?raw'),
-      import('./components/StepConfirmar.css?raw'),
+  import('./components/StepDatos.css?raw'),
       import('react-datepicker/dist/react-datepicker.css?raw')
     ]).then(mods => {
       mods.forEach(mod => {
