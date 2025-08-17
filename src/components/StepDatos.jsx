@@ -3,15 +3,25 @@ import "./StepDatos.css";
 import 'react-phone-input-2/lib/style.css';
 
 import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 
 // ID del extra de "Llevar vehículo a mi dirección"
 const EXTRA_ENVIO_ID = "1";
 
 const StepDatos = ({ onNext, onBack, initialData = {}, extrasSeleccionados = [] }) => {
+  // Ref para el widget
+  const widgetRef = React.useRef(null);
+
+  // Scroll al inicio del widget cuando se avanza de paso
+  React.useEffect(() => {
+    if (widgetRef.current) {
+      widgetRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, []);
   const [nombre, setNombre] = useState(initialData.nombre || "");
   const [email, setEmail] = useState(initialData.email || "");
   const [codigoPais, setCodigoPais] = useState(initialData.codigoPais || "+54 Argentina");
-  const [telefono, setTelefono] = useState(initialData.telefono || "");
+  const [telefono, setTelefono] = useState(initialData.telefono || "+54");
   const [dni, setDni] = useState(initialData.dni || "");
   const [direccion, setDireccion] = useState(initialData.direccion || "");
   const [nota, setNota] = useState(initialData.nota || "");
@@ -41,102 +51,165 @@ const StepDatos = ({ onNext, onBack, initialData = {}, extrasSeleccionados = [] 
   };
 
   return (
-    <form className="step-datos-form" onSubmit={handleSubmit}>
-      <div className="datos-title">Detalles de reserva</div>
-      <div className="datos-fields">
-        <label className="field-full">
-          Nombre y Apellido
-          <input type="text" value={nombre} onChange={e => setNombre(e.target.value)} />
-          {errores.nombre && <span className="datos-error">{errores.nombre}</span>}
-        </label>
-        <label className="field-full">
-          Email
-          <input type="email" value={email} onChange={e => setEmail(e.target.value)} />
-          {errores.email && <span className="datos-error">{errores.email}</span>}
-        </label>
-        <label className="field-full">
-          Teléfono
-          <PhoneInput
-            country={'ar'}
-            value={telefono}
-            onChange={setTelefono}
-            inputClass="datos-input"
-            containerStyle={{ width: '100%' }}
-            inputStyle={{
-              padding: '0.4rem 0.5rem',
-              border: '1.5px solid #e0e0e0',
-              borderRadius: '8px',
-              fontSize: '0.8rem',
-              outline: 'none',
-              transition: 'border 0.2s, box-shadow 0.2s',
-              background: '#fcfcfe',
-              boxShadow: '0 4px 16px rgba(0,0,0,0.07)',
-              fontFamily: 'inherit',
-              width: '100%',
-              boxSizing: 'border-box',
-              margin: 0,
-              color: '#222'
-            }}
-            buttonStyle={{
-              border: 'none',
-              background: 'transparent',
-              marginRight: '0.5rem'
-            }}
-            enableSearch
-            preferredCountries={['ar','uy','br','cl','us','es','mx','co','pe']}
-            specialLabel=""
-            inputProps={{ required: true }}
-          />
-          {errores.telefono && <span className="datos-error">{errores.telefono}</span>}
-        </label>
-        <label className="field-full">
-          N° DNI o Pasaporte
-          <input type="text" value={dni} onChange={e => setDni(e.target.value)} />
-          {errores.dni && <span className="datos-error">{errores.dni}</span>}
-        </label>
-        {mostrarDireccion && (
-          <label className="field-full">
-            Dirección a la que llevaremos el vehículo
-            <input type="text" value={direccion} onChange={e => setDireccion(e.target.value)} />
-            {errores.direccion && <span className="datos-error">{errores.direccion}</span>}
-          </label>
-        )}
-        <label className="field-full datos-checkbox" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.3rem', fontWeight: 500 }}>
-          ¿Posee tarjeta de crédito?
-          <div style={{ display: 'flex', gap: '1.2rem', marginTop: '0.2rem' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontWeight: 400 }}>
-              <input
-                type="radio"
-                name="tarjeta"
-                value="si"
-                checked={tieneTarjeta === true}
-                onChange={() => setTieneTarjeta(true)}
-              />
-              Sí
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontWeight: 400 }}>
-              <input
-                type="radio"
-                name="tarjeta"
-                value="no"
-                checked={tieneTarjeta === false}
-                onChange={() => setTieneTarjeta(false)}
-              />
-              No
-            </label>
+  <div ref={widgetRef} className="step-datos-bg" style={{background:'#f5f6f8', minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center'}}>
+      <div className="step-datos-desktop-card" style={{width:'100%', maxWidth:'1200px', margin:'2rem auto', boxSizing:'border-box', background:'#fff', borderRadius:'20px', boxShadow:'0 8px 32px 0 rgba(60,60,60,0.10)', padding:'2.5rem 1.5rem'}}>
+        <form className="step-datos-form" onSubmit={handleSubmit} style={{width:'100%', margin:0, padding:0, boxSizing:'border-box'}}>
+          <div style={{textAlign:'center', marginBottom:'1.5rem'}}>
+            <h2 style={{fontSize:'2.2rem', fontWeight:800, color:'#222', marginBottom:'0.5rem'}}>Completa tus datos para la reserva</h2>
+            <div style={{fontSize:'1.1rem', color:'#555'}}>Un último paso para asegurar tu vehículo.</div>
           </div>
-          {tieneTarjeta === null && <span className="datos-error">Selecciona una opción</span>}
-        </label>
-        <label className="field-full">
-          Nota
-          <textarea value={nota} onChange={e => setNota(e.target.value)} rows={2} />
-        </label>
+          <div className="datos-fields" style={{display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:'1.2rem', marginBottom:'2.5rem', width:'100%'}}>
+            {/* Nombre y Apellido */}
+            <label className="field-full datos-label" style={{fontWeight:600, fontSize:'1rem', color:'#222', display:'flex', flexDirection:'column', gap:'0.2rem'}}>
+              <span style={{marginBottom:'0.1rem'}}>Nombre y Apellido</span>
+              <input className="datos-input" type="text" value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Ej: Juan Pérez" style={{fontSize:'1rem', padding:'0.7rem 1rem', borderRadius:'10px', border:'1px solid #e5e7eb'}} />
+              {errores.nombre && <span className="datos-error" style={{color:'#e23c3c', fontSize:'0.95rem'}}>{errores.nombre}</span>}
+            </label>
+            {/* Email */}
+            <label className="field-full datos-label" style={{fontWeight:600, fontSize:'1rem', color:'#222', display:'flex', flexDirection:'column', gap:'0.2rem'}}>
+              <span style={{marginBottom:'0.1rem'}}>Email</span>
+              <input className="datos-input" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="juan.perez@email.com" style={{fontSize:'1rem', padding:'0.7rem 1rem', borderRadius:'10px', border:'1px solid #e5e7eb'}} />
+              {errores.email && <span className="datos-error" style={{color:'#e23c3c', fontSize:'0.95rem'}}>{errores.email}</span>}
+            </label>
+            {/* Teléfono */}
+            <label className="field-full datos-label" style={{fontWeight:600, fontSize:'1rem', color:'#222', display:'flex', flexDirection:'column', gap:'0.2rem'}}>
+              <span style={{marginBottom:'0.1rem'}}>Teléfono</span>
+              <input className="datos-input" type="tel" value={telefono} onChange={e => setTelefono(e.target.value)} placeholder="Ej: +54 9 11 1234-5678" autoComplete="tel" required style={{fontSize:'1rem', padding:'0.7rem 1rem', borderRadius:'10px', border:'1px solid #e5e7eb'}} />
+              {errores.telefono && <span className="datos-error" style={{color:'#e23c3c', fontSize:'0.95rem'}}>{errores.telefono}</span>}
+            </label>
+            {/* DNI o Pasaporte */}
+            <label className="field-full datos-label" style={{fontWeight:600, fontSize:'1rem', color:'#222', display:'flex', flexDirection:'column', gap:'0.2rem'}}>
+              <span style={{marginBottom:'0.1rem'}}>N° DNI o Pasaporte</span>
+              <input className="datos-input" type="text" value={dni} onChange={e => setDni(e.target.value)} placeholder="Ingresa tu número de documento" style={{fontSize:'1rem', padding:'0.7rem 1rem', borderRadius:'10px', border:'1px solid #e5e7eb'}} />
+              {errores.dni && <span className="datos-error" style={{color:'#e23c3c', fontSize:'0.95rem'}}>{errores.dni}</span>}
+            </label>
+            {/* Dirección si aplica */}
+            {mostrarDireccion && (
+              <label className="field-full datos-label" style={{gridColumn:'span 2', fontWeight:600, fontSize:'1rem', color:'#222', display:'flex', flexDirection:'column', gap:'0.2rem'}}>
+                <span style={{marginBottom:'0.1rem'}}>Dirección a la que llevaremos el vehículo</span>
+                <input className="datos-input" type="text" value={direccion} onChange={e => setDireccion(e.target.value)} placeholder="Ej: Av. Siempre Viva 742, Springfield" style={{fontSize:'1rem', padding:'0.7rem 1rem', borderRadius:'10px', border:'1px solid #e5e7eb'}} />
+                {errores.direccion && <span className="datos-error" style={{color:'#e23c3c', fontSize:'0.95rem'}}>{errores.direccion}</span>}
+              </label>
+            )}
+            {/* Nota */}
+            <label className="field-full datos-label" style={{gridColumn: mostrarDireccion ? 'span 2' : 'span 1', fontWeight:600, fontSize:'1rem', color:'#222', display:'flex', flexDirection:'column', gap:'0.2rem'}}>
+              <span style={{marginBottom:'0.1rem'}}>Nota (opcional)</span>
+              <textarea className="datos-input" value={nota} onChange={e => setNota(e.target.value)} rows={2} placeholder="¿Alguna aclaración que debamos tener en cuenta?" style={{fontSize:'1rem', padding:'0.7rem 1rem', borderRadius:'10px', border:'1px solid #e5e7eb'}} />
+            </label>
+            {/* Tarjeta de crédito */}
+            <div className="field-full datos-checkbox" style={{gridColumn:'span 1', display: 'flex', flexDirection: 'column', gap: '0.3rem', fontWeight: 600, fontSize:'1rem', color:'#222'}}>
+              <div style={{marginBottom:'0.5rem', fontWeight:700}}>¿Posee tarjeta de crédito?</div>
+              <div style={{display:'flex', gap:'1rem', width:'100%'}}>
+                <button
+                  type="button"
+                  className={`datos-checkbox-btn${tieneTarjeta === true ? ' selected-si' : ''}`}
+                  onClick={() => setTieneTarjeta(true)}
+                  style={{fontSize:'1rem', padding:'0.7rem 1.2rem', borderRadius:'10px', border:'1px solid #e5e7eb', background:tieneTarjeta===true?'#e6fbe7':'#fff', color:'#222', fontWeight:600, display:'flex', alignItems:'center', gap:'0.5em'}}
+                >
+                  <span style={{color:'#1bbf4c', fontSize:'1.3em'}}>&#10004;</span> Sí
+                </button>
+                <button
+                  type="button"
+                  className={`datos-checkbox-btn${tieneTarjeta === false ? ' selected-no' : ''}`}
+                  onClick={() => setTieneTarjeta(false)}
+                  style={{fontSize:'1rem', padding:'0.7rem 1.2rem', borderRadius:'10px', border:'1px solid #e5e7eb', background:tieneTarjeta===false?'#fdeaea':'#fff', color:'#222', fontWeight:600, display:'flex', alignItems:'center', gap:'0.5em'}}
+                >
+                  <span style={{color:'#e23c3c', fontSize:'1.3em'}}>&#10008;</span> No
+                </button>
+              </div>
+              {tieneTarjeta === null && <span className="datos-error" style={{color:'#e23c3c', fontSize:'0.95rem'}}>Selecciona una opción</span>}
+            </div>
+          </div>
+          <div className="datos-btns" style={{display:'flex', justifyContent:'flex-end', marginTop:'1.5rem', width:'100%'}}>
+            <button type="button" className="back-btn-datos" style={{background:'#eee', color:'#333', border:'none', borderRadius:'12px', padding:'0.9rem 2.2rem', fontSize:'1.1rem', fontWeight:700, marginRight:'1rem', boxShadow:'0 2px 8px rgba(255,102,0,0.08)', cursor:'pointer'}} onClick={onBack}>&larr; Atrás</button>
+            <button type="submit" className="next-btn-datos" style={{background:'#4f46e5', color:'#fff', border:'none', borderRadius:'12px', padding:'0.9rem 2.2rem', fontSize:'1.1rem', fontWeight:700, boxShadow:'0 4px 16px 0 rgba(60,60,60,0.10)', cursor:'pointer'}}>Confirmar Datos &rarr;</button>
+          </div>
+        </form>
       </div>
-      <div className="datos-btns">
-        <button type="button" className="back-btn-datos" onClick={onBack}>Atrás</button>
-        <button type="submit" className="next-btn-datos">Siguiente</button>
-      </div>
-    </form>
+      <style>{`
+        .datos-fields .datos-label, .datos-fields .datos-input, .datos-fields .datos-checkbox {
+          width: 100%;
+          min-width: 0;
+          box-sizing: border-box;
+        }
+        @media (max-width: 600px) {
+          .step-datos-desktop-card {
+            max-width: 98vw !important;
+            margin: 1.2rem 0 !important;
+            border-radius: 16px !important;
+            padding: 1.1rem 0.7rem !important;
+            box-shadow: 0 4px 16px 0 rgba(60,60,60,0.10) !important;
+          }
+          .datos-fields {
+            grid-template-columns: 1fr !important;
+            gap: 0.9rem !important;
+            margin-bottom: 1.2rem !important;
+          }
+          .datos-fields .datos-label {
+            font-size: 1rem !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 0.2rem !important;
+          }
+          .datos-fields .datos-input {
+            font-size: 1rem !important;
+            padding: 0.7rem 1rem !important;
+            border-radius: 10px !important;
+            border: 1px solid #e5e7eb !important;
+          }
+          .datos-fields .datos-checkbox {
+            width: 100% !important;
+            min-width: 0 !important;
+            font-size: 1rem !important;
+          }
+          .datos-btns {
+            flex-direction: column !important;
+            gap: 0.7rem !important;
+            margin-top: 0.7rem !important;
+            align-items: stretch !important;
+          }
+          .back-btn-datos, .next-btn-datos {
+            width: 100% !important;
+            margin-right: 0 !important;
+            margin-bottom: 0 !important;
+            font-size: 1.1rem !important;
+            padding: 0.9rem 0 !important;
+          }
+        }
+        @media (max-width: 900px) {
+          .step-datos-desktop-card {
+            max-width: 98vw !important;
+            margin: 1.2rem 0 !important;
+            border-radius: 16px !important;
+            padding: 1.1rem 0.7rem !important;
+            box-shadow: 0 4px 16px 0 rgba(60,60,60,0.10) !important;
+          }
+          .datos-fields {
+            grid-template-columns: 1fr !important;
+            gap: 0.9rem !important;
+            margin-bottom: 1.2rem !important;
+          }
+          .datos-fields .datos-label, .datos-fields .datos-input, .datos-fields .datos-checkbox {
+            width: 100%;
+            min-width: 0;
+            font-size: 1rem !important;
+          }
+          .datos-btns {
+            flex-direction: column !important;
+            gap: 0.7rem !important;
+            margin-top: 0.7rem !important;
+            align-items: stretch !important;
+          }
+          .back-btn-datos, .next-btn-datos {
+            width: 100% !important;
+            margin-right: 0 !important;
+            margin-bottom: 0 !important;
+            font-size: 1.1rem !important;
+            padding: 0.9rem 0 !important;
+          }
+        }
+      `}</style>
+    </div>
   );
 };
 

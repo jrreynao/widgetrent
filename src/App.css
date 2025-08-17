@@ -37,10 +37,6 @@
     box-sizing: border-box;
     box-shadow: none;
   }
-  body {
-    padding: 0;
-    background: transparent;
-  }
 }
 
 .step-fechas-title {
@@ -124,11 +120,13 @@
   color: #aaa;
   cursor: not-allowed;
 }
+
+/* Eliminar estilos globales del body y root para máxima integración */
+body {
+  all: unset;
+}
 #root {
-  width: 100%;
-  min-height: unset;
-  display: block;
-  background: transparent;
+  all: unset;
 }
 
 .logo {
@@ -161,13 +159,4 @@
 
 .card {
   padding: 2em;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-width: 320px;
-  min-height: 100%;
 }
