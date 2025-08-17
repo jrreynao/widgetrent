@@ -30,7 +30,7 @@ const StepExtras = ({ extras, selectedExtras, onChange, onNext, onBack }) => {
   };
 
   return (
-  <div ref={widgetRef} className="step-extras-form" style={{background:'#f5f6f8', minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column'}}>
+  <div ref={widgetRef} className="step-extras-form" style={{background:'transparent'}}>
       <div className="extras-card-container" style={{width:'100%', maxWidth:'1200px', margin:'2rem auto', boxSizing:'border-box', background:'#fff', borderRadius:'20px', boxShadow:'0 8px 32px 0 rgba(60,60,60,0.10)', padding:'2.5rem 1.5rem'}}>
         <form onSubmit={e => { e.preventDefault(); onNext(); }} style={{width:'100%', margin:0, padding:0, boxSizing:'border-box'}}>
           <div style={{textAlign:'center', marginBottom:'1.5rem'}}>

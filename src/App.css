@@ -17,17 +17,15 @@
   --wr-accent: #6b5cff; /* optional secondary accent (purple) */
 }
 
-/* Normalize base */
+/* Normalize base: no background, no forced centering/height */
 .step-fechas-bg,
 .step-vehiculo-form,
 .step-extras-form,
 .step-datos-bg,
 .step-confirmar,
 .step-confirmar-mobile {
-  background: var(--wr-surface);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: transparent !important;
+  display: block !important;
 }
 
 /* Cards */

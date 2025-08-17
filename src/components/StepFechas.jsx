@@ -91,7 +91,7 @@ export default function StepFechas({ onNext }) {
   };
 
   return (
-    <div ref={widgetRef} className="step-fechas-bg" style={{background:'#f5f6f8', minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center'}}>
+    <div ref={widgetRef} className="step-fechas-bg" style={{background:'transparent', display:'block'}}>
       <style>{`
         .step-fechas-card {
           background: #fff;

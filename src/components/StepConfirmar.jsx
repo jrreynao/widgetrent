@@ -53,7 +53,7 @@ const StepConfirmar = ({ form, vehiculos, extras, onBack, onSubmit }) => {
 
   // Componente móvil/tablet
   const ConfirmarMobile = () => (
-  <div ref={widgetRef} className="step-confirmar-mobile" style={{background:'#f5f6f8', minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column'}}>
+  <div ref={widgetRef} className="step-confirmar-mobile" style={{background:'transparent'}}>
   <div className="confirmar-card-mobile" style={{width:'100%', margin:'1.2rem 0', boxSizing:'border-box', background:'#fff', borderRadius:'16px', boxShadow:'0 4px 16px 0 rgba(60,60,60,0.10)', padding:'1.1rem 0.7rem', display:'flex', flexDirection:'column', gap:'0.7rem'}}>
   <h1 style={{fontSize:'1.2rem', fontWeight:800, textAlign:'center', color:'#222', marginBottom:'0.2rem'}}>¡Revisá y confirmá tu reserva!</h1>
   <p style={{textAlign:'center', color:'#6b7280', margin:'0.2rem 0 0.7rem', fontSize:'1rem'}}>Revisá los detalles de tu alquiler antes de enviar la cotización.</p>
@@ -254,7 +254,7 @@ const StepConfirmar = ({ form, vehiculos, extras, onBack, onSubmit }) => {
 
   return (
     isDesktop ? (
-      <div className="step-confirmar" style={{background:'#f5f6f8', minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column'}}>
+  <div className="step-confirmar" style={{background:'transparent'}}>
         <div className="confirmar-card" style={{width:'100%', maxWidth:'1100px', margin:'2rem auto', boxSizing:'border-box', background:'#fff', borderRadius:'2rem', boxShadow:'0 8px 32px 0 rgba(60,60,60,0.10)', padding:'2rem 2.5rem'}}>
           {/* ...existing desktop JSX... */}
           <div style={{textAlign:'center', marginBottom:'2rem'}}>

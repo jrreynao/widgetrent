@@ -51,7 +51,7 @@ const StepDatos = ({ onNext, onBack, initialData = {}, extrasSeleccionados = [] 
   };
 
   return (
-  <div ref={widgetRef} className="step-datos-bg" style={{background:'#f5f6f8', minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center'}}>
+  <div ref={widgetRef} className="step-datos-bg" style={{background:'transparent'}}>
       <div className="step-datos-desktop-card" style={{width:'100%', maxWidth:'1200px', margin:'2rem auto', boxSizing:'border-box', background:'#fff', borderRadius:'20px', boxShadow:'0 8px 32px 0 rgba(60,60,60,0.10)', padding:'2.5rem 1.5rem'}}>
         <form className="step-datos-form" onSubmit={handleSubmit} style={{width:'100%', margin:0, padding:0, boxSizing:'border-box'}}>
           <div style={{textAlign:'center', marginBottom:'1.5rem'}}>
