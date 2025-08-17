@@ -125,15 +125,31 @@ function App() {
       // No reemplazar %tarjeta_credito% en el admin, lo hace el backend
       const htmlAdmin = replaceVars(plantillaAdmin, vars, ["tarjeta_credito"]);
 
-  const res = await fetch("/backend/send-reserva", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          form: { ...formConTotal, allExtras },
-          htmlCliente,
-          htmlAdmin
-        })
-      });
+      // Endpoint robusto: intenta /backend, cae a /api si no está mapeado
+      const bases = ["/backend", "/api"];
+      let res;
+      let lastErr;
+      for (const base of bases) {
+        try {
+          res = await fetch(`${base}/send-reserva`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              form: { ...formConTotal, allExtras },
+              htmlCliente,
+              htmlAdmin
+            })
+          });
+          if (res.ok) break;
+          // Si no ok, intenta el siguiente base
+          lastErr = await res.clone().json().catch(() => ({ error: res.statusText }));
+        } catch (e) {
+          lastErr = { error: e.message };
+        }
+      }
+      if (!res || !res.ok) {
+        throw new Error(lastErr?.error || 'No se pudo enviar la reserva');
+      }
       if (res.ok) {
         alert("¡Cotización enviada correctamente!\n\nTe enviamos un correo con los detalles y el link para finalizar tu reserva y pago.\n\nSi no lo ves en tu bandeja de entrada, revisa la carpeta de spam o promociones.");
         setStep(1);
