@@ -33,9 +33,23 @@ app.post('/backend/send-reserva', async (req, res, next) => {
     return handler(req, res, next);
   } catch (e) { next(e); }
 });
+// Prefijos explícitos por si el proxy no elimina /api
+app.post('/api/send-reserva', async (req, res, next) => {
+  try {
+    const handler = await getHandler();
+    return handler(req, res, next);
+  } catch (e) { next(e); }
+});
 
 // GET dry-run rápido
 app.get('/send-reserva', (req, res) => {
+  const q = req.query || {};
+  if (q.dryRun === '1' || q.dryRun === 'true') {
+    return res.json({ ok: true, mode: 'dry-run', method: 'GET' });
+  }
+  res.status(405).json({ error: 'Use POST' });
+});
+app.get('/api/send-reserva', (req, res) => {
   const q = req.query || {};
   if (q.dryRun === '1' || q.dryRun === 'true') {
     return res.json({ ok: true, mode: 'dry-run', method: 'GET' });
@@ -46,6 +60,7 @@ app.get('/send-reserva', (req, res) => {
 // Health checks
 app.get('/healthz', (req, res) => res.json({ ok: true }));
 app.get('/backend/healthz', (req, res) => res.json({ ok: true }));
+app.get('/api/healthz', (req, res) => res.json({ ok: true }));
 
 // Manejo básico de errores
 // eslint-disable-next-line no-unused-vars
