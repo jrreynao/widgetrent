@@ -9,8 +9,10 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.json({ ok: true, service: 'widgetrent-api' });
 });
-// En cPanel, si la Application URL es /api, la ruta efectiva será /api/send-reserva
+// En cPanel: si la Application URL es /api, la ruta efectiva será /api/send-reserva.
+// También exponemos /backend/* para evitar conflictos con carpetas estáticas /api en public_html.
 app.post('/send-reserva', handler);
+app.post('/backend/send-reserva', handler);
 // Permitir prueba rápida vía GET con dryRun=1
 app.get('/send-reserva', (req, res) => {
   const q = req.query || {};
@@ -21,6 +23,7 @@ app.get('/send-reserva', (req, res) => {
 });
 // Health check sencillo
 app.get('/healthz', (req, res) => res.json({ ok: true }));
+app.get('/backend/healthz', (req, res) => res.json({ ok: true }));
 
 // Manejo básico de errores para registrar fallos
 // eslint-disable-next-line no-unused-vars

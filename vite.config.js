@@ -5,10 +5,10 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': {
+      '/backend': {
         target: 'https://widgetrent.onrender.com',
         changeOrigin: true,
-        // No rewrite, ya que la API espera /api/send-reserva
+        rewrite: (path) => path.replace(/^\/backend/, '/api')
       }
     }
   },

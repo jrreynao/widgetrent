@@ -125,7 +125,7 @@ function App() {
       // No reemplazar %tarjeta_credito% en el admin, lo hace el backend
       const htmlAdmin = replaceVars(plantillaAdmin, vars, ["tarjeta_credito"]);
 
-      const res = await fetch("/api/send-reserva", {
+  const res = await fetch("/backend/send-reserva", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
