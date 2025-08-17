@@ -1,9 +1,6 @@
-
 import nodemailer from 'nodemailer';
-import { extras as allExtras } from '../src/data/extras.js';
-import { fillTemplate } from '../src/utils/loadEmailTemplate.js';
-import fs from 'fs';
-import path from 'path';
+import { extras as allExtras } from './src/data/extras.js';
+import { fillTemplate } from './src/utils/loadEmailTemplate.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -35,10 +32,6 @@ export default async function handler(req, res) {
     }
   });
 
-  // Variables necesarias
-  // TODO: Asegúrate de definir direccionEntrega, mostrarDireccion, tarjeta_credito, extras_list_block, fillTemplate, htmlCliente, htmlAdmin antes de usar
-
-  // Leer las plantillas de correo HTML
   // Leer las plantillas desde la URL pública
   async function fetchTemplate(url) {
     const res = await fetch(url);
@@ -47,6 +40,7 @@ export default async function handler(req, res) {
   }
   const htmlCliente = await fetchTemplate('https://widget.isracarent.com/email_templates/correo_cliente.html');
   const htmlAdmin = await fetchTemplate('https://widget.isracarent.com/email_templates/correo_admin.html');
+
   const booking_id = Math.floor(Math.random()*1000000);
   const customer_full_name = form.datos?.nombre || '';
   const customer_email = form.datos?.email || '';
@@ -91,31 +85,34 @@ export default async function handler(req, res) {
     const total = totalVehiculo + totalExtras;
     return total ? `$${Number(total).toLocaleString('es-AR')}` : '';
   })();
+
   // Lógica para mostrar dirección de entrega según extras
-let direccionEntrega = '';
-let mostrarDireccion = false;
-if (form.extras && Array.isArray(form.extras)) {
-  mostrarDireccion = form.extras.some(id => {
-    const extra = allExtras?.find(e => e.id === id);
-    return extra && (extra.name === 'Llevar vehículo a mi dirección' || extra.nombre === 'Llevar vehículo a mi dirección');
-  });
-  direccionEntrega = mostrarDireccion ? (form.datos?.direccion_entrega || '') : '';
-}
-// Definir text_direccionentrega para compatibilidad con plantillas antiguas
-const text_direccionentrega = mostrarDireccion && direccionEntrega
-  ? direccionEntrega
-  : 'Av. de los Lagos 7008, B1670 Rincón de Milberg';
-// Mensaje para el cliente (siempre explicativo)
-const text_direccionentrega_block = mostrarDireccion && direccionEntrega
-  ? `Llevaremos el vehículo a la dirección que indicaste (<b>${direccionEntrega}</b>) el día <b>${appointment_date}</b> a las <b>${hora_entregadevehiculo}</b>. Si tienes alguna duda o necesitas modificar la dirección, contáctanos.`
-  : `Deberás retirar tu vehículo en nuestra agencia. Te esperamos en <b>Av. de los Lagos 7008, B1670 Rincón de Milberg</b> a la hora acordada.`;
-// Mensaje para el admin (solo dirección o sede)
-const text_direccionentrega_admin = mostrarDireccion && direccionEntrega
-  ? `<b>Dirección de entrega:</b> ${direccionEntrega}`
-  : `<b>Retiro en sede:</b> Av. de los Lagos 7008, B1670 Rincón de Milberg`;
+  let direccionEntrega = '';
+  let mostrarDireccion = false;
+  if (form.extras && Array.isArray(form.extras)) {
+    mostrarDireccion = form.extras.some(id => {
+      const extra = allExtras?.find(e => e.id === id);
+      return extra && (extra.name === 'Llevar vehículo a mi dirección' || extra.nombre === 'Llevar vehículo a mi dirección');
+    });
+    direccionEntrega = mostrarDireccion ? (form.datos?.direccion_entrega || '') : '';
+  }
+  // Definir text_direccionentrega para compatibilidad con plantillas antiguas
+  const text_direccionentrega = mostrarDireccion && direccionEntrega
+    ? direccionEntrega
+    : 'Av. de los Lagos 7008, B1670 Rincón de Milberg';
+  // Mensaje para el cliente (siempre explicativo)
+  const text_direccionentrega_block = mostrarDireccion && direccionEntrega
+    ? `Llevaremos el vehículo a la dirección que indicaste (<b>${direccionEntrega}</b>) el día <b>${appointment_date}</b> a las <b>${hora_entregadevehiculo}</b>. Si tienes alguna duda o necesitas modificar la dirección, contáctanos.`
+    : `Deberás retirar tu vehículo en nuestra agencia. Te esperamos en <b>Av. de los Lagos 7008, B1670 Rincón de Milberg</b> a la hora acordada.`;
+  // Mensaje para el admin (solo dirección o sede)
+  const text_direccionentrega_admin = mostrarDireccion && direccionEntrega
+    ? `<b>Dirección de entrega:</b> ${direccionEntrega}`
+    : `<b>Retiro en sede:</b> Av. de los Lagos 7008, B1670 Rincón de Milberg`;
+
   const tarjeta_credito_var = typeof form.datos?.tieneTarjeta !== 'undefined'
     ? (form.datos.tieneTarjeta ? 'Sí' : 'No')
     : '';
+
   const customer_whatsapp_link = (() => {
     if (!form.datos?.telefono) return '';
     let tel = String(form.datos.telefono).replace(/[^0-9]/g, '');
@@ -131,6 +128,7 @@ const text_direccionentrega_admin = mostrarDireccion && direccionEntrega
     }
     return tel;
   })();
+
   const whatsapp_factura = (() => {
     let factura = '🧾 *Resumen de Reserva*%0A';
     factura += `Orden: ${booking_id}%0A`;
@@ -156,6 +154,7 @@ const text_direccionentrega_admin = mostrarDireccion && direccionEntrega
     factura += 'Deseo terminar mi proceso de reserva y me gustaría saber los métodos de pago disponibles.';
     return factura;
   })();
+
   const vars = {
     customer_full_name,
     customer_email,
@@ -182,11 +181,11 @@ const text_direccionentrega_admin = mostrarDireccion && direccionEntrega
   };
 
   let mensaje_entrega_cliente = '';
-if (mostrarDireccion && direccionEntrega) {
-  mensaje_entrega_cliente = `Llevaremos el vehículo a la dirección que indicaste (<b>${direccionEntrega}</b>) el día <b>${appointment_date}</b> a las <b>${hora_entregadevehiculo}</b>. Si tienes alguna duda o necesitas modificar la dirección, contáctanos.`;
-} else {
-  mensaje_entrega_cliente = `Deberás retirar tu vehículo en nuestra agencia. Te esperamos en <a href="https://g.co/kgs/gj5UX3Z" style="color:#2563eb;text-decoration:none;font-weight:500" target="_blank">Av. de los Lagos 7008, B1670 Rincón de Milberg</a> a la hora acordada.`;
-}
+  if (mostrarDireccion && direccionEntrega) {
+    mensaje_entrega_cliente = `Llevaremos el vehículo a la dirección que indicaste (<b>${direccionEntrega}</b>) el día <b>${appointment_date}</b> a las <b>${hora_entregadevehiculo}</b>. Si tienes alguna duda o necesitas modificar la dirección, contáctanos.`;
+  } else {
+    mensaje_entrega_cliente = `Deberás retirar tu vehículo en nuestra agencia. Te esperamos en <a href="https://g.co/kgs/gj5UX3Z" style="color:#2563eb;text-decoration:none;font-weight:500" target="_blank">Av. de los Lagos 7008, B1670 Rincón de Milberg</a> a la hora acordada.`;
+  }
   vars.mensaje_entrega_cliente = mensaje_entrega_cliente;
 
   try {

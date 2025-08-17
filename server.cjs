@@ -5,7 +5,7 @@ const cors = require('cors');
 
 async function buildApp() {
   // Importar el handler ESM dinámicamente
-  const mod = await import('./api/send-reserva.js');
+  const mod = await import('./send-reserva.js');
   const handler = mod && (mod.default || mod.handler || mod);
 
   const app = express();
